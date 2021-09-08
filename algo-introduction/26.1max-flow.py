@@ -39,6 +39,9 @@ class DirectionGraph(object):
 
     def fordFulkerson(self, source, sink):
         """
+        计算最大流有2中方法：
+        1、fordFulkerson是一种方法，有不同实现方式寻找增广路径，本程序使用bfs
+        2、推送-重贴标签（也叫预流推进算法）
         返回最大流
         :param source: 源点
         :param sink: 终点
