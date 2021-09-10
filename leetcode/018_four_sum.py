@@ -37,7 +37,44 @@ def four_sum(nums, target):
     return out
 
 
+def fourSum2(nums, target):
+    n = len(nums)
+    if n<4:
+        return []
+    nums.sort()
+    res = list()
+    i = 0
+    while i < n:
+        while 0 < i < n and nums[i] == nums[i - 1]:
+            i += 1
+        j = i + 1
+        while j < n:
+            while j != i + 1 and j < n - 1 and nums[j] == nums[j - 1]:
+                j += 1
+            twoSum = target - (nums[i] + nums[j])
+            left = j + 1
+            right = n - 1
+            while left < right:
+                if nums[left] + nums[right] == twoSum:
+                    res.append([nums[i], nums[j], nums[left], nums[right]])
+
+                    left += 1
+                    while left < n and nums[left] == nums[left - 1]:
+                        left += 1
+                    right -= 1
+                    while right >= 0 and nums[right] == nums[right + 1]:
+                        right -= 1
+                elif nums[left] + nums[right] > twoSum:
+                    right -= 1
+                else:
+                    left += 1
+            j += 1
+        i += 1
+    return res
+
+
 if __name__ == "__main__":
     nums = [1, 0, -1, 0, -2, 2]
     target = 0
     print(four_sum(nums, target))
+    print(fourSum2(nums, target))
