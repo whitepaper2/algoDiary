@@ -9,6 +9,7 @@
 # 最大流最小切割算法
 
 from collections import deque
+from copy import deepcopy
 
 
 class DirectionGraph(object):
@@ -39,7 +40,7 @@ class DirectionGraph(object):
 
     def fordFulkerson(self, source, sink):
         """
-        计算最大流有2中方法：
+        计算最大流有2种方法：
         1、fordFulkerson是一种方法，有不同实现方式寻找增广路径，本程序使用bfs
         2、推送-重贴标签（也叫预流推进算法）
         返回最大流
@@ -64,16 +65,52 @@ class DirectionGraph(object):
                 v = parent[v]
         return maxFlow
 
+    def printPathByBFS(self, s, t, originGraph):
+
+        flowGraph = list()
+        for g1, g2 in zip(originGraph, self.graph):
+            cur = list()
+            for c1, c2 in zip(g1, g2):
+                if c2 >= 0:
+                    cur.append(c1 - c2)
+                else:
+                    cur.append(0)
+            flowGraph.append(cur)
+        visited = [False] * self.ROW
+        queue = deque()
+        queue.append(s)
+        path = dict()
+        visited[s] = True
+        while queue:
+            cur = queue.popleft()
+            for idx, cap in enumerate(flowGraph[cur]):
+                if cap > 0:
+                    path[(cur, idx)] = cap
+                    # if not visited[idx]:
+                    queue.append(idx)
+                    # visited[idx] = True
+        return path
+
 
 if __name__ == "__main__":
-    graph = [[0, 8, 0, 0, 3, 0],
-             [0, 0, 9, 0, 0, 0],
-             [0, 0, 0, 0, 7, 2],
-             [0, 0, 0, 0, 0, 5],
-             [0, 0, 7, 4, 0, 0],
+    # 1.单向图
+    # graph = [[0, 8, 0, 0, 3, 0],
+    #          [0, 0, 9, 0, 0, 0],
+    #          [0, 0, 0, 0, 7, 2],
+    #          [0, 0, 0, 0, 0, 5],
+    #          [0, 0, 0, 4, 0, 0],
+    #          [0, 0, 0, 0, 0, 0]]
+    graph = [[0, 16, 13, 0, 0, 0],
+             [0, 0, 0, 12, 0, 0],
+             [0, 4, 0, 0, 14, 0],
+             [0, 0, 9, 0, 0, 20],
+             [0, 0, 0, 7, 0, 4],
              [0, 0, 0, 0, 0, 0]]
+    # todo:形成环或双向边
+    graph2 = deepcopy(graph)
     g = DirectionGraph(graph)
     source = 0
     sink = 5
     maxFlow = g.fordFulkerson(0, 5)
-    print(maxFlow)
+    print("maxFlow={}".format(maxFlow))
+    print(g.printPathByBFS(source, sink, graph2))
