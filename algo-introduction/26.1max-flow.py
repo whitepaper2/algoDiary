@@ -10,12 +10,39 @@
 
 from collections import deque
 from copy import deepcopy
+from datetime import datetime
 
 
 class DirectionGraph(object):
-    def __init__(self, graph):
-        self.graph = graph
-        self.ROW = len(graph)
+    def __init__(self, vertex, edge):
+        parallelEdge = self._checkParallelEdge(edge)
+        if parallelEdge:
+            for u, v, w in parallelEdge:
+                v2 = str(datetime.now().strftime("%Y%m%d%H%M%S%f"))
+                vertex.append(v2)
+                edge.remove([u, v, w])
+                edge.append([u, v2, w])
+                edge.append([v2, v, w])
+        self.ROW = len(vertex)
+        self.vertex2idx = dict()
+        self.idx2vertex = dict()
+        for i, v in enumerate(vertex):
+            self.vertex2idx[v] = i
+            self.idx2vertex[i] = v
+        self.graph = [[0] * self.ROW for _ in range(self.ROW)]
+        for u, v, w in edge:
+            self.graph[self.vertex2idx[u]][self.vertex2idx[v]] = w
+        self.rawGraph = deepcopy(self.graph)
+
+    def _checkParallelEdge(self, edge):
+        uniEdge = set()
+        parallelEdge = list()
+        for u, v, w in edge:
+            if '|'.join(sorted([u, v])) not in uniEdge:
+                uniEdge.add('|'.join(sorted([u, v])))
+            else:
+                parallelEdge.append([u, v, w])
+        return parallelEdge
 
     def searchPathByBFS(self, s, t, parent):
         """
@@ -50,6 +77,8 @@ class DirectionGraph(object):
         """
         maxFlow = 0
         parent = [-1] * self.ROW
+        source = self.vertex2idx[source]
+        sink = self.vertex2idx[sink]
         while self.searchPathByBFS(source, sink, parent):
             pathFlow = float('inf')
             s = sink
@@ -65,10 +94,11 @@ class DirectionGraph(object):
                 v = parent[v]
         return maxFlow
 
-    def printPathByBFS(self, s, t, originGraph):
-
+    def printPathByBFS(self, source):
+        s = self.vertex2idx[source]
         flowGraph = list()
-        for g1, g2 in zip(originGraph, self.graph):
+        print(self.graph)
+        for g1, g2 in zip(self.rawGraph, self.graph):
             cur = list()
             for c1, c2 in zip(g1, g2):
                 if c2 >= 0:
@@ -76,41 +106,36 @@ class DirectionGraph(object):
                 else:
                     cur.append(0)
             flowGraph.append(cur)
-        visited = [False] * self.ROW
         queue = deque()
         queue.append(s)
         path = dict()
-        visited[s] = True
         while queue:
             cur = queue.popleft()
             for idx, cap in enumerate(flowGraph[cur]):
                 if cap > 0:
-                    path[(cur, idx)] = cap
-                    # if not visited[idx]:
+                    path[(self.idx2vertex[cur], self.idx2vertex[idx])] = cap
                     queue.append(idx)
-                    # visited[idx] = True
         return path
 
 
 if __name__ == "__main__":
-    # 1.单向图
-    # graph = [[0, 8, 0, 0, 3, 0],
-    #          [0, 0, 9, 0, 0, 0],
-    #          [0, 0, 0, 0, 7, 2],
-    #          [0, 0, 0, 0, 0, 5],
-    #          [0, 0, 0, 4, 0, 0],
-    #          [0, 0, 0, 0, 0, 0]]
-    graph = [[0, 16, 13, 0, 0, 0],
-             [0, 0, 0, 12, 0, 0],
-             [0, 4, 0, 0, 14, 0],
-             [0, 0, 9, 0, 0, 20],
-             [0, 0, 0, 7, 0, 4],
-             [0, 0, 0, 0, 0, 0]]
-    # todo:形成环或双向边
-    graph2 = deepcopy(graph)
-    g = DirectionGraph(graph)
-    source = 0
-    sink = 5
-    maxFlow = g.fordFulkerson(0, 5)
+    # 1.单向图，矩阵表示
+    vertex = ['s', 'v1', 'v2', 'v3', 'v4', 't']
+    edge = [['s', 'v1', 16], ['s', 'v2', 13], ['v1', 'v3', 12], ['v2', 'v1', 4], ['v2', 'v4', 14], ['v3', 'v2', 9],
+            ['v3', 't', 20], ['v4', 'v3', 7], ['v4', 't', 4]]
+    g = DirectionGraph(vertex, edge)
+    source = 's'
+    sink = 't'
+    maxFlow = g.fordFulkerson(source, sink)
     print("maxFlow={}".format(maxFlow))
-    print(g.printPathByBFS(source, sink, graph2))
+    print(g.printPathByBFS(source))
+    # todo:形成环或双向边
+    vertex = ['s', 'v1', 'v2', 'v3', 'v4', 't']
+    edge = [['s', 'v1', 16], ['s', 'v2', 13], ['v1', 'v3', 12], ['v2', 'v1', 4], ['v2', 'v4', 14], ['v3', 'v2', 9],
+            ['v3', 't', 20], ['v4', 'v3', 7], ['v4', 't', 4], ['v1', 'v2', 10], ['v3', 'v4', 20]]
+    g = DirectionGraph(vertex, edge)
+    source = 's'
+    sink = 't'
+    maxFlow = g.fordFulkerson(source, sink)
+    print("maxFlow={}".format(maxFlow))
+    print(g.printPathByBFS(source))
