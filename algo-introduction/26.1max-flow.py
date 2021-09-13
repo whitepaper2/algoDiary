@@ -44,7 +44,7 @@ class DirectionGraph(object):
                 parallelEdge.append([u, v, w])
         return parallelEdge
 
-    def searchPathByBFS(self, s, t, parent):
+    def _searchPathByBFS(self, s, t, parent):
         """
         是否存在从s->t的路径
         :param s: 源点
@@ -79,7 +79,7 @@ class DirectionGraph(object):
         parent = [-1] * self.ROW
         source = self.vertex2idx[source]
         sink = self.vertex2idx[sink]
-        while self.searchPathByBFS(source, sink, parent):
+        while self._searchPathByBFS(source, sink, parent):
             pathFlow = float('inf')
             s = sink
             while s != source:

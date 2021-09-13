@@ -92,71 +92,6 @@ class DirectionGraph(object):
                     queue.append(idx)
         return path
 
-    def bipartiteMatch(self):
-        # d = float('inf')
-        maxVal = 100000
-        d = maxVal
-        curSum = 0
-        maxSize = 20
-        ly = [0] * maxSize
-        lx = [0] * maxSize
-        n = self.ROW
-        # for i in range(1, n):
-        #     lx[i] = float('-inf')
-        #     for j in range(1, n):
-        #         lx[i] = max(lx[i], self.graph[i][j])
-        print(lx)
-        link = [-1] * maxSize
-        visx = [False] * maxSize
-        visy = [False] * maxSize
-
-        def can(t):
-            visx[t] = True
-            for k in range(1, n):
-                if not visy[k] and lx[t] + ly[k] == self.graph[t][k]:
-                    visy[k] = True
-                    if link[k] == -1 or can(link[k]):
-                        link[k] = t
-                        return True
-            return False
-
-        live = 0
-        perfect = False
-        for i in range(1, n):
-            for i2 in range(1, n):
-                lx[i2] = float('-inf')
-                for j2 in range(1, n):
-                    lx[i2] = max(lx[i2], self.graph[i2][j2])
-            print(i)
-            iters = 0
-            while True:
-                if can(i):
-                    break
-                for j in range(1, n):
-                    if visy[j]:
-                        for k in range(1, n):
-                            if not visy[k]:
-                                d = min(d, lx[j] + ly[k] - self.graph[j][k])
-
-                if d == maxVal:
-                    return -1
-                if d == 0:
-                    break
-                for j in range(1, n):
-                    if visx[j]:
-                        lx[j] -= d
-                for j in range(1, n):
-                    if visy[j]:
-                        ly[j] += d
-                print(d, lx, ly)
-                iters += 1
-
-        for i in range(1, n):
-            if link[i] > -1:
-                curSum += self.graph[link[i]][i]
-                print("match {}-{}".format(link[i], i))
-        return curSum
-
 
 def bruteSearch(students, mentors):
     """
@@ -217,24 +152,17 @@ if __name__ == "__main__":
     maxFlow = g.fordFulkerson(s, t)
     print("maxFlow={}".format(maxFlow))
     print(g.printPathByBFS(s))
-    # todo:匈牙利算法,km,解决带权重的二分图完全匹配问题
-    # students = [[1, 1, 0], [1, 0, 1], [0, 0, 1]]
-    # mentors = [[1, 0, 0], [0, 0, 1], [1, 1, 0]]
-    # students = [[0, 1, 0, 1, 1, 1], [1, 0, 0, 1, 0, 1], [1, 0, 1, 1, 0, 0]]
-    # mentors = [[1, 0, 0, 0, 0, 1], [0, 1, 0, 0, 1, 1], [0, 1, 0, 0, 1, 1]]
-
-    # students = [[0, 1, 0, 0, 1, 0, 1, 0], [0, 1, 0, 1, 0, 1, 1, 1], [0, 1, 1, 1, 0, 0, 0, 1], [0, 1, 1, 0, 1, 0, 1, 1],
-    #             [1, 0, 0, 0, 0, 0, 0, 0], [0, 1, 1, 1, 1, 1, 1, 0]]
-    # mentors = [[1, 0, 1, 0, 0, 1, 0, 1], [0, 1, 0, 0, 1, 0, 1, 0], [0, 0, 1, 1, 1, 0, 1, 1], [0, 0, 1, 0, 0, 0, 1, 0],
-    #            [0, 0, 0, 1, 0, 0, 1, 0], [0, 0, 0, 1, 1, 1, 1, 1]]
-    students = [[1, 1, 0, 1, 0], [1, 0, 1, 0, 0], [0, 1, 0, 0, 0], [1, 1, 0, 1, 0]]
-    mentors = [[0, 1, 1, 1, 0], [1, 0, 0, 0, 1], [0, 0, 1, 1, 0], [1, 1, 0, 0, 0]]
-    n = len(students)
-    score = [[0] * (n + 1) for _ in range(n + 1)]
-    for i, stu in enumerate(students):
-        for j, men in enumerate(mentors):
-            score[i + 1][j + 1] += sum([1 for u, v in zip(stu, men) if u == v])
-    print(score)
-    g = DirectionGraph(score)
-    maxScore = g.bipartiteMatch()
-    print("maxScore={}".format(maxScore))
+    # todo:km,解决带权重的二分图完全匹配问题
+    # 最大流求解二分图匹配个数，增加1源点、1终点
+    vertex = ["l1", "l2", "l3", "l4", "r1", "r2", "r3", "r4", "s", "t"]
+    edge = [["l1", "r1"], ["l1", "r2"], ["l2", "r2"], ["l2", "r3"], ["l3", "r1"], ["l3", "r2"], ["l4", "r3"],
+            ["s", "l1"],
+            ["s", "l2"], ["s", "l3"], ["s", "l4"], ["r1", "t"], ["r2", "t"], ["r3", "t"], ["r4", "t"]]
+    vertex2Idx = dict()
+    graph = [[0] * len(vertex) for _ in range(len(vertex))]
+    for i, v in enumerate(vertex):
+        vertex2Idx[v] = i
+    for u, v in edge:
+        graph[vertex2Idx[u]][vertex2Idx[v]] = 1
+    g = DirectionGraph(graph)
+    print(g.fordFulkerson(vertex2Idx["s"], vertex2Idx["t"]))
