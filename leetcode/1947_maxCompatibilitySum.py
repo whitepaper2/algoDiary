@@ -158,7 +158,46 @@ class DirectionGraph(object):
         return curSum
 
 
+def bruteSearch(students, mentors):
+    """
+    暴力搜索
+    :param students: 学生打分
+    :param mentors: 老师打分
+    :return:
+    """
+    n = len(students)
+    score = [[0] * n for _ in range(n)]
+    for i, stu in enumerate(students):
+        for j, men in enumerate(mentors):
+            score[i][j] = sum([1 for u, v in zip(stu, men) if u == v])
+    res = float('-inf')
+
+    def traceBack(step, cur):
+        nonlocal res
+        if step == n:
+            curSum = 0
+            for x, y in zip(range(n), cur):
+                curSum += score[x][y]
+            if curSum > res:
+                res = curSum
+            return
+        for i in range(n):
+            if i not in cur:
+                cur.append(i)
+                traceBack(step + 1, cur)
+                cur.pop()
+
+    traceBack(0, [])
+    return res
+
+
 if __name__ == "__main__":
+    # students = [[1, 1, 0], [1, 0, 1], [0, 0, 1]]
+    # mentors = [[1, 0, 0], [0, 0, 1], [1, 1, 0]]
+    students = [[1, 1, 0, 1, 0], [1, 0, 1, 0, 0], [0, 1, 0, 0, 0], [1, 1, 0, 1, 0]]
+    mentors = [[0, 1, 1, 1, 0], [1, 0, 0, 0, 1], [0, 0, 1, 1, 0], [1, 1, 0, 0, 0]]
+    print(bruteSearch(students, mentors))
+
     # todo:最大流算法，不能解决完全匹配问题
     students = [[1, 1, 0], [1, 0, 1], [0, 0, 1]]
     mentors = [[1, 0, 0], [0, 0, 1], [1, 1, 0]]
