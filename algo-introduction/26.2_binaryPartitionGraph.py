@@ -8,8 +8,13 @@
 
 
 # 二分图求最大匹配个数，匈牙利算法
+from collections import defaultdict
+
+
 class UndirectionGraph(object):
     def __init__(self, leftVertex, rightVertex, edge):
+        self.vertex = leftVertex + rightVertex
+        self.edge = edge
         self.leftVertex2Idx = dict()
         self.rightVertex2Idx = dict()
         self.leftIdx2Vertex = dict()
@@ -27,6 +32,32 @@ class UndirectionGraph(object):
         self.graph = [[0] * len(rightVertex) for _ in range(len(leftVertex))]
         for u, v in edge:
             self.graph[self.leftVertex2Idx[u]][self.rightVertex2Idx[v]] = 1
+
+    def checkBiPartiGraph(self):
+        """
+        检测该图是否为二分图，当且仅当不存在奇数环
+        相邻节点着不同颜色
+        :return:
+        """
+        neighbor = defaultdict(list)
+        for u, v in self.edge:
+            neighbor[u].append(v)
+            neighbor[v].append(u)
+        color = {u: 0 for u in self.vertex}
+
+        def dfs(i, c):
+            color[i] = c
+
+            for j in neighbor[i]:
+                if color[j] == 0:
+                    dfs(j, 3 - c)
+                elif color[j] == color:
+                    return False
+
+        for u in self.vertex:
+            if color[u] == 0:
+                dfs(u, 1)
+        return True
 
     def _dfs(self, x):
         """
@@ -64,3 +95,4 @@ if __name__ == "__main__":
     print(g.graph)
     print(g.getMatchCnts())
     g.printMatch()
+    print(g.checkBiPartiGraph())
