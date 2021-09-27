@@ -110,8 +110,9 @@ def getPrefixCnts2(words, prefix):
             cur = self.root
             for w in word:
                 child = cur.children.get(w)
-                if child is not None:
-                    res += child.cnts
+                if child is None:
+                    break
+                res += child.cnts
                 cur = child
             return res
 
