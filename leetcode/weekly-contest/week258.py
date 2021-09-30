@@ -6,7 +6,9 @@
 # @File    : 5869_maxProduct.py
 # @Software: PyCharm
 
-# 258场周赛，求字符串中两不相交子序列的最大乘积回文序列
+"""
+258场周赛，求字符串中两不相交子序列的最大乘积回文序列
+"""
 
 
 class Solution:

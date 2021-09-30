@@ -23,6 +23,11 @@ class Point(object):
         return self.x * other.y - self.y * other.x
 
 
+class Segment(object):
+    def __init__(self):
+        pass
+
+
 def isCross(p1, p2, p3, p4):
     """
     1、相交的充要条件：叉积<0
@@ -44,7 +49,7 @@ def isCross(p1, p2, p3, p4):
         """
         return (pk - pi) * (pj - pi)
 
-    def segment(pi, pj, pk):
+    def isSegment(pi, pj, pk):
         if min(pi.x, pj.x) <= pk.x <= max(pi.x, pj.x) and min(pi.y, pj.y) <= pk.y <= max(pi.y, pj.y):
             return True
         return False
@@ -55,13 +60,13 @@ def isCross(p1, p2, p3, p4):
     d4 = direction(p1, p2, p4)
     if d1 * d2 < 0 and d3 * d4 < 0:
         return True
-    if d1 == 0 and segment(p3, p4, p1):
+    if d1 == 0 and isSegment(p3, p4, p1):
         return True
-    elif d2 == 0 and segment(p3, p4, p2):
+    elif d2 == 0 and isSegment(p3, p4, p2):
         return True
-    elif d3 == 0 and segment(p1, p2, p3):
+    elif d3 == 0 and isSegment(p1, p2, p3):
         return True
-    elif d4 == 0 and segment(p1, p2, p4):
+    elif d4 == 0 and isSegment(p1, p2, p4):
         return True
     else:
         return False

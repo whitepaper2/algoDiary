@@ -5,6 +5,10 @@
 # @Site    : 
 # @File    : 20210926_snow.py
 # @Software: PyCharm
+from collections import Counter
+from functools import lru_cache
+from itertools import product
+from typing import List
 
 
 def getMaxPath(grid):
@@ -23,24 +27,6 @@ def getMaxPath(grid):
         right -= grid[0][i]
         maxPath = min(maxPath, max(left, right))
     return maxPath
-
-
-def printPos(a, b):
-    """
-    计算偏移，约瑟夫环，《算法进阶》hash，判断6边型是否相等。
-    :param a:
-    :param b:
-    :return:
-    """
-    n = len(a)
-
-    for i in range(n):
-        for j in range(n):
-            for k in range(n):
-                print(a[(i + k) % n], b[(j + k) % n])
-
-
-from typing import List
 
 
 def placeWordInCrossword(board: List[List[str]], word: str) -> bool:
@@ -99,11 +85,6 @@ def placeWordInCrossword(board: List[List[str]], word: str) -> bool:
     return b4
 
 
-from itertools import product
-from collections import Counter
-from functools import lru_cache
-
-
 def scoreOfStudents(s: str, answers: List[int]) -> int:
     @lru_cache(None)
     def helper(s):
@@ -127,10 +108,6 @@ def scoreOfStudents(s: str, answers: List[int]) -> int:
 if __name__ == "__main__":
     # grid = [[20, 3, 20, 17, 2, 12, 15, 17, 4, 15], [20, 10, 13, 14, 15, 5, 2, 3, 14, 3]]
     # print(getMaxPath(grid))
-    #
-    # a = [1, 2, 3, 4, 5, 6]
-    # b = [2, 3, 4, 5, 6, 1]
-    # printPos(a, b)
     #
     # board = [["#", " ", "#"], [" ", " ", "#"], ["#", "c", " "]]
     # word = "abc"
