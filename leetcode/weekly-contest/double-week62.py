@@ -53,6 +53,12 @@ from collections import defaultdict
 
 
 def waysToPartition2(nums: List[int], k: int) -> int:
+    """
+    字典存储每个和的个数
+    :param nums:
+    :param k:
+    :return:
+    """
     n = len(nums)
     prefixSum = [0] * (n + 1)
     res = 0
@@ -82,6 +88,34 @@ def waysToPartition2(nums: List[int], k: int) -> int:
     return res
 
 
+from itertools import accumulate
+from collections import Counter
+
+
+def waysToPartition3(nums: List[int], k: int) -> int:
+    """
+    前缀和，当改变nums[i]时，presum[0:i-1]不变，presum[i:n-1]每个都+(k-nums[i])，分别维护两个指针，left\right
+    随着i的改变，left\right相应的加、减
+    :param nums:
+    :param k:
+    :return:
+    """
+    n = len(nums)
+    prefixSum = list(accumulate(nums))
+    totalSum = prefixSum[n - 1]
+    left = defaultdict(int)
+    right = Counter(prefixSum[:n - 1])
+    res = right[totalSum / 2]
+    for i in range(n):
+        if i > 0:
+            left[prefixSum[i - 1]] += 1
+            right[prefixSum[i - 1]] -= 1
+        leftx = (totalSum + k - nums[i]) / 2
+        rightx = totalSum / 2 - (k - nums[i]) / 2
+        res = max(res, left[leftx] + right[rightx])
+    return res
+
+
 """
 2023. 连接后等于目标字符串的字符串对
 
@@ -93,7 +127,8 @@ def waysToPartition2(nums: List[int], k: int) -> int:
 
 def numOfPairs(nums, target: str) -> int:
     """
-    哈希+遍历
+    正确解法：哈希+遍历
+    不正确解法：排序+二分查找，因为不具备有序性
     :param nums:
     :param target:
     :return:
@@ -114,35 +149,34 @@ def numOfPairs(nums, target: str) -> int:
 
 
 if __name__ == "__main__":
-    nums = [2, -1, 2]
-    k = 3
-    print(waysToPartition2(nums, k))
+    # nums = [2, -1, 2]
+    # k = 3
+    # print(waysToPartition3(nums, k))
 
-    nums = [0, 0, 0]
-    k = 1
-    print(waysToPartition2(nums, k))
-
-    nums = [22, 4, -25, -20, -15, 15, -16, 7, 19, -10, 0, -13, -14]
-    k = -33
-    print(waysToPartition2(nums, k))
-
+    # nums = [0, 0, 0]
+    # k = 1
+    # print(waysToPartition2(nums, k))
+    #
+    # nums = [22, 4, -25, -20, -15, 15, -16, 7, 19, -10, 0, -13, -14]
+    # k = -33
+    # print(waysToPartition3(nums, k))
+    #
     nums = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 30827, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    print(len(nums))
     k = 0
-    print(waysToPartition2(nums, k))
+    print(waysToPartition3(nums, k))
 
-    nums = ["777", "7", "77", "77"]
-    target = "7777"
-    print(numOfPairs(nums, target))
-
-    nums = ["123", "4", "12", "34"]
-    target = "1234"
-    print(numOfPairs(nums, target))
-
-    nums = ["1", "1", "1"]
-    target = "11"
-    print(numOfPairs(nums, target))
-
-    nums = ["74", "1", "67", "1", "74"]
-    target = "174"
-    print(numOfPairs(nums, target))
+    # nums = ["777", "7", "77", "77"]
+    # target = "7777"
+    # print(numOfPairs(nums, target))
+    #
+    # nums = ["123", "4", "12", "34"]
+    # target = "1234"
+    # print(numOfPairs(nums, target))
+    #
+    # nums = ["1", "1", "1"]
+    # target = "11"
+    # print(numOfPairs(nums, target))
+    #
+    # nums = ["74", "1", "67", "1", "74"]
+    # target = "174"
+    # print(numOfPairs(nums, target))
