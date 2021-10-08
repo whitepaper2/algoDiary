@@ -1,9 +1,9 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
-from sklearn.preprocessing import LabelEncoder
 import numpy as np
 import pandas as pd
-import pickle
+from sklearn.externals import joblib
+from sklearn.preprocessing import LabelEncoder, OrdinalEncoder
 
 dfp = pd.read_csv('./features/dfp_features1.csv')
 
@@ -247,21 +247,51 @@ dfp_features['IP归属地和卡bin国家是否一致'] = (dfp['IP地区码'] == 
 dfp_features['IP归属地和收货国家是否一致'] = (dfp['IP地区码'] == dfp['收货国家']).astype(np.int8)
 dfp_features['是否使用COUPON=True'] = dfp['是否使用COUPON'].astype(str).apply(lambda x: 1 if x == "True" else 0)
 dfp_features['用户电子邮箱后缀'] = dfp.用户电子邮箱.str.split('@', expand=True).iloc[:, 1]
-sparse_features = ['收货国家', '收货州', '收货地址邮编', '卡bin国家英文简码', '支付方式', '交易币种', 'IP地区码', '用户电子邮箱后缀']
 
-sparseDict = {}
-for feat in sparse_features:
-    dfp_features[feat] = dfp_features[feat].astype(str).apply(lambda x: x.lower())
-    lbe = LabelEncoder()
-    dfp_features[feat] = lbe.fit_transform(dfp_features[feat])
-    sparseDict[feat] = {x: i for x, i in zip(lbe.classes_, range(len(lbe.classes_)))}
-
-from sklearn.externals import joblib
-
-joblib.dump(sparseDict, './params/feas_count_mapper.m')
 # 国家风险特征
 risk_dict = {"AL": "阿尔及利亚", "BR": "巴西", "CL": "智利", "CO": "哥伦比亚", "EG": "埃及", "IN": "印度", "MA": "摩洛哥", "MX": "墨西哥",
              "PE": "秘鲁", "RU": "俄罗斯", "ZA": "南非", "UA": "乌克兰", "VE": "委内瑞拉", "ID": "印度尼西亚", "PK": "巴基斯坦", "PH": "菲律宾"}
 l = list(risk_dict.keys())
 dfp_features['highRiskCountry'] = dfp.收货国家.apply(lambda x: 1 if x in l else 0)
-dfp_features.to_csv("./features/dfp_features3.csv", index=None)
+
+sparse_features = ['收货国家', '收货州', '收货地址邮编', '卡bin国家英文简码', '支付方式', '交易币种', 'IP地区码', '用户电子邮箱后缀']
+for feat in sparse_features:
+    dfp_features[feat] = dfp_features[feat].astype(str)
+
+train_inds = dfp_features.index[
+    (dfp_features.事件发生时间 >= '2021-05-01 00:00:00') & (dfp_features.事件发生时间 < '2021-07-30 00:00:00')]
+test_inds = dfp_features.index[
+    (dfp_features.事件发生时间 >= '2021-07-30 00:00:00') & (dfp_features.事件发生时间 < '2021-08-20 00:00:00')]
+
+train_pdf = dfp_features.iloc[train_inds, :]
+test_pdf = dfp_features.iloc[test_inds, :]
+
+# Convert categorical features to int type
+# 空值nan,变为最大值；未出现，变为0
+encoder_map = {}
+
+
+def conv_cat(df, cols, train=True):
+    if train:
+        enc = OrdinalEncoder()
+        enc.fit(df[cols])
+        res = enc._transform(df[cols], handle_unknown='ignore')[0]
+        encoder_map['cat_cols'] = enc
+    else:
+        enc = encoder_map['cat_cols']
+        res = enc._transform(df[cols], handle_unknown='ignore')[0]
+    dfc = df.copy()
+    dfc.loc[:, cols] = res
+    return dfc
+
+
+sparseDict = {}
+categories = encoder_map['cat_cols'].categories_
+for i, feat in enumerate(sparse_features):
+    sparseDict[feat] = {x: y for x, y in zip(categories[i], range(len(categories[i])))}
+
+joblib.dump(sparseDict, './params/feas_count_mapper.m')
+encodeTrainPdf = conv_cat(train_pdf, sparse_features, True)
+encodeTestPdf = conv_cat(test_pdf, sparse_features, False)
+encodeTrainPdf.to_csv("./features/dfp_features3_train.csv", index=None)
+encodeTestPdf.to_csv("./features/dfp_features3_test.csv", index=None)

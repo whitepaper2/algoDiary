@@ -90,8 +90,6 @@ descPdf = pd.DataFrame(lst, columns=colName)
 print(descPdf)
 
 # PR曲线
-from sklearn.metrics import precision_recall_curve, average_precision_score
-import matplotlib.pyplot as plt
 
 
 def plotPR(desc, true_y, pred_y):

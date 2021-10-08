@@ -6,6 +6,7 @@
 # @File    : 2.1_2_insertion_sort.py
 # @Software: PyCharm
 
+
 def merge(A, p, q, r):
     """
     note：排序有序数组，哨兵，复制出来，重新构造，双指针

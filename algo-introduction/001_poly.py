@@ -6,6 +6,7 @@
 # @File    : 001_poly.py
 # @Software: PyCharm
 
+
 def poly(A, x, n):
     """
     note:多项式计算方法，honer法则
@@ -32,7 +33,7 @@ fig = plt.figure()
 ax = fig.gca(projection='3d')
 x = np.linspace(-10, 10, 10000)
 y = np.linspace(-10, 10, 10000)
-s = 0.7*x+0.3*y
+s = 0.7 * x + 0.3 * y
 ax.plot(x, y, s, label='parametric curve')
 ax.legend()
 plt.show()
