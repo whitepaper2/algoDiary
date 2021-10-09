@@ -17,8 +17,8 @@ Alice 和 Bob 轮流进行自己的回合，Alice 先手。每一回合，玩家
 假设两位玩家均采用 最佳 决策。如果 Alice 获胜，返回 true ；如果 Bob 获胜，返回 false 。
 
 """
-from typing import List
 from collections import Counter
+from typing import List
 
 
 def stoneGameIX(stones: List[int]) -> bool:
@@ -47,9 +47,46 @@ def stoneGameIX(stones: List[int]) -> bool:
 
 """
 
+from collections import deque
+
 
 def smallestSubsequence(s: str, k: int, letter: str, repetition: int) -> str:
-    pass
+    """
+    如果没有reptition个letter，经典问题：algo-improve/0x11-monotoStack.py
+    :param s:
+    :param k:
+    :param letter:
+    :param repetition:
+    :return:
+    """
+    stack = deque()
+    letterCnts = s.count(letter)
+    n = len(s)
+    p = 0
+    delCnt = n - k
+    for i in range(n):
+        while stack and delCnt > 0 and stack[-1] > s[i]:
+            if stack[-1] == letter:
+                if repetition > letterCnts + p - 1:
+                    break
+                p -= 1
+            stack.pop()
+            delCnt -= 1
+
+        stack.append(s[i])
+        if s[i] == letter:
+            p += 1
+            letterCnts -= 1
+    while len(stack) > k:
+        if stack[-1] == letter:
+            p -= 1
+        stack.pop()
+    res = list(stack)
+    for i in range(k - 1, -1, -1):
+        if p < repetition and res[i] != letter:
+            res[i] = letter
+            p += 1
+    return "".join(res)
 
 
 if __name__ == "__main__":
@@ -60,3 +97,10 @@ if __name__ == "__main__":
     k = 3
     letter = "e"
     repetition = 1
+    print(smallestSubsequence(s, k, letter, repetition))
+
+    s = "leetcode"
+    k = 4
+    letter = "e"
+    repetition = 2
+    print(smallestSubsequence(s, k, letter, repetition))

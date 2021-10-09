@@ -88,7 +88,7 @@ def minSubStr(s: str, k: int):
         stack.append(s[i])
     res = []
     while stack:
-        stack.append(stack.pop())
+        res.append(stack.pop())
     res.reverse()
     return res
 
