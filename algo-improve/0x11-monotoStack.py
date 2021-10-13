@@ -93,6 +93,38 @@ def minSubStr(s: str, k: int):
     return res
 
 
+def maxRectangleArea(nums):
+    """
+    能获得的最大矩阵面积，等宽
+    :param nums:
+    :return:
+    """
+    res = 0
+    # 虚拟值
+    nums.append(-1)
+    n = len(nums)
+    stack = [0] * n
+    p = 0
+    width = [0] * n
+    for i in range(n):
+        if stack[p] < nums[i]:
+            p += 1
+            width[p] = 1
+            stack[p] = nums[i]
+        else:
+            w = 0
+            while p >= 0 and stack[p] > nums[i]:
+                w += width[p]
+                res = max(res, stack[p] * w)
+                p -= 1
+            # 加入新矩阵
+            p += 1
+            width[p] = 1 + w
+            stack[p] = nums[i]
+
+    return res
+
+
 if __name__ == "__main__":
     nums = [6, 4, 10, 10, 8, 6, 4, 2, 12, 14]
     K = 3
@@ -102,3 +134,6 @@ if __name__ == "__main__":
     s = "helloworld"
     k = 5
     print(minSubStr(s, k))
+
+    nums = [2, 1, 5, 6, 2, 3]
+    print(maxRectangleArea(nums))
