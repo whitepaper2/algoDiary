@@ -92,6 +92,26 @@ class Solution:
         dfs(0, cntDict)
         return self.hiCnt
 
+    def countHighestScoreNodes3(self, parents: List[int]) -> int:
+        n = len(parents)
+        self.sons = [[None, None] for _ in range(n)]
+        self.sonsNum = [[0, 0] for _ in range(n)]
+        for i, v in list(enumerate(parents))[1:]:
+            self.sons[v].append(i)
+
+        def dfs(root):
+            if root == None:
+                return 0
+            if len(self.sons[root]) == 2:
+                return 1
+            self.sonsNum[root][0] = dfs(self.sons[root][-1])
+            self.sonsNum[root][1] = dfs(self.sons[root][-2])
+            return sum(self.sonsNum[root]) + 1
+
+        dfs(0)
+        res = [max(line[0], 1) * max(line[1], 1) * max(n - line[0] - line[1] - 1, 1) for line in self.sonsNum]
+        return res.count(max(res))
+
 
 """
 5909. 并行课程 III
@@ -146,6 +166,7 @@ if __name__ == "__main__":
     ss = Solution()
     print(ss.countHighestScoreNodes(parents))
     print(ss.countHighestScoreNodes2(parents))
+    print(ss.countHighestScoreNodes3(parents))
 
     n = 3
     relations = [[1, 3], [2, 3]]
