@@ -80,38 +80,6 @@ def primeFactor(N):
     """
     primes = []
     inds = []
-    p = 2
-    while p <= int(math.sqrt(N)) + 1:
-        if N % p == 0:
-            if primes and primes[-1] == p:
-                inds[-1] += 1
-            else:
-                primes.append(p)
-                inds.append(1)
-            N = N // p
-        else:
-            p += 1
-    if N > 1:
-        primes.append(N)
-        inds.append(1)
-    resList = list()
-    for p, i in zip(primes, inds):
-        if i > 1:
-            resList.append(str(p) + '^' + str(i))
-        else:
-            resList.append(str(p))
-    return "*".join(resList)
-
-
-def primeFactor2(N):
-    """
-    质因子分解：97532468=2^2*11*17*101*1291
-    质因子递增顺序排列
-    :param N: > 0
-    :return:
-    """
-    primes = []
-    inds = []
     for p in range(2, int(math.sqrt(N)) + 1):
         if N % p == 0:
             primes.append(p)
@@ -128,9 +96,8 @@ def primeFactor2(N):
 
 
 if __name__ == "__main__":
-    N = 97532468
+    N = 100
     print(primeFactor(N))
-    print(primeFactor2(N))
     print(isPrime(N))
     print(rangePrimes(10000))
     print(primeDistance(10, 10000))
