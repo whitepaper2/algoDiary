@@ -24,8 +24,6 @@ def equaltion(a, b, c):
         gcd(a,b) = a*x + b*y
         :param a:
         :param b:
-        :param x:
-        :param y:
         :return:
         """
         nonlocal x, y
@@ -63,8 +61,6 @@ def equaltion2(a, b):
         gcd(a,b) = a*x + b*y
         :param a:
         :param b:
-        :param x:
-        :param y:
         :return:
         """
         nonlocal x, y
@@ -92,7 +88,43 @@ def gcd(a, b):
     return a if b == 0 else gcd(b, a % b)
 
 
+import math
+
+
+def equaltion3(a, b, p):
+    """
+    求方程 a^x==b(mod p), gcd(a,p)=1
+    解(x)
+    :param a:
+    :param b:
+    :param p:
+    :return:
+    """
+
+    def mypower(a, x):
+        res = 1
+        for i in range(x):
+            res = res * a
+        return res
+
+    t = int(math.sqrt(p)) + 1
+    bdict = dict()
+    curA = 1
+    for j in range(t):
+        bdict[b * curA] = j
+        curA = curA * a
+    tmpA = mypower(a, t)
+    if tmpA == 0:
+        return 1 if b == 0 else -1
+    for i in range(t + 1):
+        val = mypower(a, i)
+        j = -1 if val not in bdict else bdict[val]
+        if j >= 0 and i * t - j >= 0:
+            return i * t - j
+
+
 if __name__ == "__main__":
-    equaltion(5, 8, 10)
-    print(gcd(5, 8))
-    print(equaltion2(5, 8))
+    # equaltion(5, 8, 10)
+    # print(gcd(5, 8))
+    # print(equaltion2(5, 8))
+    print(equaltion3(3, 2, 7))
