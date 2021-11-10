@@ -118,11 +118,80 @@ def getReverseCnts(nums):
     return res
 
 
+def getVCnts(nums):
+    """
+    楼兰图腾，计算 V 型个数
+    遍历每个数，分别计算 left[i]\right[i]，左边\右边大于nums[i]的个数，最后再求和
+    :param nums: [1,2,...,n]的一个排列
+    :return:
+    """
+    # n = len(nums)
+    # left = [0] * n
+    # right = [0] * n
+    # # 右边比当前值小的个数
+    # bst = BinIndexTree()
+    # for i in range(n - 1, -1, -1):
+    #     right[i] += bst.ask(nums[i] - 1)
+    #     bst.addByOne(nums[i], 1)
+    # # 左边比当前值小的个数
+    # bst = BinIndexTree()
+    # for i in range(n):
+    #     left[i] += bst.ask(nums[i] - 1)
+    #     bst.addByOne(nums[i], 1)
+
+    n = len(nums)
+    left = [0] * n
+    right = [0] * n
+    # 右边比当前值大的个数
+    bst = BinIndexTree()
+    for i in range(n - 1, -1, -1):
+        right[i] += bst.ask(n) - bst.ask(nums[i] - 1)
+        bst.addByOne(nums[i], 1)
+    # 左边比当前值大的个数
+    bst = BinIndexTree()
+    for i in range(n):
+        left[i] += bst.ask(n) - bst.ask(nums[i] - 1)
+        bst.addByOne(nums[i], 1)
+    res = 0
+    for p, q in zip(left, right):
+        print(p, q)
+        res += p * q
+    return res
+
+
+def getVCnts2(nums):
+    """
+    楼兰图腾，计算 V 型个数
+    遍历每个数，分别计算 left[i]\right[i]，左边\右边大于nums[i]的个数，最后再求和
+    :param nums: [1,2,...,n]的一个排列
+    :return:
+    """
+    n = len(nums)
+    bst = BinIndexTree()
+    leftLower = [0] * (n + 1)
+    leftGreater = [0] * (n + 1)
+    for i, e in enumerate(nums):
+        leftLower[i + 1] = bst.ask(e - 1)
+        leftGreater[i + 1] = bst.ask(n) - bst.ask(e)
+        bst.addByOne(e, 1)
+    resA = 0
+    resV = 0
+    bst = BinIndexTree()
+    for i in range(len(nums) - 1, -1, -1):
+        resA += leftLower[i + 1] * bst.ask(nums[i] - 1)
+        resV += leftGreater[i + 1] * (bst.ask(n) - bst.ask(nums[i]))
+        bst.addByOne(nums[i], 1)
+    return resA, resV
+
+
 if __name__ == "__main__":
     nums = [1, 2, 3, 15, 9, 6]
     bitInstance = BinIndexTree()
     bitInstance.addByList(nums)
-    for i in range(1, len(nums) + 1):
-        print(bitInstance.ask(i))
+    # for i in range(1, len(nums) + 1):
+    #     print(bitInstance.ask(i))
     print(bitInstance.askRange(2, 5))
     print(getReverseCnts(nums))
+
+    nums = [1, 5, 3, 2, 4]
+    print(getVCnts2(nums))
