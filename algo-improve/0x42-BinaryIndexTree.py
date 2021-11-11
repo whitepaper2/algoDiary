@@ -60,7 +60,7 @@ class BinIndexTree(object):
 
     def ask(self, i):
         """
-        [1-i]求和
+        单点查询，[1-i]求和
         :param i:
         :return:
         """
@@ -83,7 +83,7 @@ class BinIndexTree(object):
 
     def addByOne(self, i, y):
         """
-        在 A[i] += y
+        单点增加，在 A[i] += y
         :param i:
         :param y:
         :return:
@@ -184,6 +184,53 @@ def getVCnts2(nums):
     return resA, resV
 
 
+def tinyProblem(nums, commands):
+    """
+    第一类指令形如 C l r d，表示把数列中第 l∼r 个数都加 d。
+    第二类指令形如 Q x，表示询问数列中第 x 个数的值。
+    对于每个询问，输出一个整数表示答案。
+    :param nums:下标从1开始
+    :param commands: 指令集合
+    :return:
+    """
+    nums.insert(0, 0)
+    bitInstance = BinIndexTree()
+    for command in commands:
+        if command[0] == 'Q':
+            print(nums[command[1]] + bitInstance.ask(command[1]))
+        else:
+            l, r, v = command[1], command[2], command[3]
+            bitInstance.addByOne(l, v)
+            bitInstance.addByOne(r + 1, -v)
+
+
+def tinyProblem2(nums, commands):
+    """
+    第一类指令形如 C l r d，表示把数列中第 l∼r 个数都加 d。
+    第二类指令形如 Q l r，表示询问数列中第 l-r 个数的和。
+    对于每个询问，输出一个整数表示答案。
+    :param nums:下标从1开始
+    :param commands: 指令集合
+    :return:
+    """
+    nums.insert(0, 0)
+    from itertools import accumulate
+    prefixSum = list(accumulate(nums))
+    bitInstance = BinIndexTree()
+    bitInstance2 = BinIndexTree()
+    for command in commands:
+        if command[0] == 'Q':
+            l, r = command[1], command[2]
+            print(prefixSum[r] + (r + 1) * bitInstance.ask(r) - bitInstance2.ask(r) - (
+                    prefixSum[l - 1] + (l - 1) * bitInstance.ask(l - 1) - bitInstance2.ask(l - 1)))
+        else:
+            l, r, v = command[1], command[2], command[3]
+            bitInstance.addByOne(l, v)
+            bitInstance.addByOne(r + 1, -v)
+            bitInstance2.addByOne(l, l * v)
+            bitInstance2.addByOne(r + 1, -v * (r + 1))
+
+
 if __name__ == "__main__":
     nums = [1, 2, 3, 15, 9, 6]
     bitInstance = BinIndexTree()
@@ -195,3 +242,12 @@ if __name__ == "__main__":
 
     nums = [1, 5, 3, 2, 4]
     print(getVCnts2(nums))
+
+    nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    commands = [['Q', 4], ['Q', 1], ['Q', 2], ['C', 1, 6, 3], ['Q', 2]]
+    print("-" * 5)
+    tinyProblem(nums, commands)
+
+    nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    commands = [['Q', 4, 4], ['Q', 1, 10], ['Q', 2, 4], ['C', 3, 6, 3], ['Q', 2, 4]]
+    tinyProblem2(nums, commands)
