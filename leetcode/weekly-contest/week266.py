@@ -66,16 +66,18 @@ def reverseEvenLengthGroups(head: Optional[ListNode]) -> Optional[ListNode]:
         valList.append(head.val)
         head = head.next
     n = len(valList)
-    group = int(math.sqrt(n))
-    rangeLeft = [0] * (group + 1)
-    rangeRight = [0] * (group + 1)
-    for i in range(1, group + 1):
+    maxGroup = n // 2 + 1
+    group = 0
+    rangeLeft = [0] * (maxGroup + 1)
+    rangeRight = [0] * (maxGroup + 1)
+
+    for i in range(1, maxGroup + 1):
         rangeLeft[i] = i * (i - 1) // 2 + 1
         rangeRight[i] = i * (i - 1) // 2 + i
-    if rangeRight[group] < n:
-        group += 1
-        rangeLeft.append(min(rangeRight[group - 1] + 1, n))
-        rangeRight.append(n)
+        if i * (i - 1) // 2 + i >= n:
+            group = i
+            rangeRight[i] = n
+            break
 
     def reverseList(l, r, nums):
         while l < r:
@@ -85,14 +87,12 @@ def reverseEvenLengthGroups(head: Optional[ListNode]) -> Optional[ListNode]:
 
     valList.insert(0, 0)
     for i in range(1, group + 1):
-        if i % 2 == 0:
+        if (rangeRight[i] - rangeLeft[i] + 1) % 2 == 0:
             reverseList(rangeLeft[i], rangeRight[i], valList)
-    print(rangeRight[group]-rangeLeft[group]+1)
-    if group%2==1 and (rangeRight[group]-rangeLeft[group]+1)%2==0:
-        reverseList(rangeLeft[group], rangeRight[group], valList)
+
     nodeList = [ListNode(v) for v in valList]
-    for i in range(len(nodeList)-1):
-        nodeList[i].next = nodeList[i+1]
+    for i in range(len(nodeList) - 1):
+        nodeList[i].next = nodeList[i + 1]
     return nodeList[0].next
 
 
@@ -101,8 +101,7 @@ if __name__ == "__main__":
     k = 2
     print(timeRequiredToBuy(tickets, k))
 
-    # head = [5, 2, 6, 3, 9, 1, 7, 3, 8, 4]
-    head = [0,4,2,1,3]
+    head = [5, 2, 6, 3, 9, 1, 7, 3, 8, 4]
     # [5, 6, 2, 3, 9, 1, 4, 8, 3, 7]
     dummy = ListNode()
     nodeLists = []
