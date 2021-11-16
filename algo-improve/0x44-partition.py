@@ -72,7 +72,7 @@ class Partitions(object):
         :param r:
         :return:
         """
-        p, q = self.rangeLeft[l], self.rangeRight[r]
+        p, q = self.pos[l], self.pos[r]
         res = 0
         if p == q:
             res = self._bruteSum(l, r, p)
