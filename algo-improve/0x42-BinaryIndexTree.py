@@ -92,9 +92,9 @@ class BinIndexTree(object):
             self.C[i] += y
             i += self._lowbit(i)
 
-    def addByList(self, A):
+    def build(self, A):
         """
-        下标从1开始计算
+        传入A创建树结构
         :param A:
         :return:
         """
@@ -234,7 +234,7 @@ def tinyProblem2(nums, commands):
 if __name__ == "__main__":
     nums = [1, 2, 3, 15, 9, 6]
     bitInstance = BinIndexTree()
-    bitInstance.addByList(nums)
+    bitInstance.build(nums)
     # for i in range(1, len(nums) + 1):
     #     print(bitInstance.ask(i))
     print(bitInstance.askRange(2, 5))
