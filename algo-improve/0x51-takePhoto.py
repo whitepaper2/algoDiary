@@ -136,6 +136,31 @@ def mobileServices(cost: List[List[int]], query: List[int]) -> int:
     return res
 
 
+def differentPaths(cost):
+    """
+    在矩阵n*m中寻找2条路径，值最大
+    :param cost: n*m
+    :return:
+    """
+    n, m = len(cost), len(cost[0])
+    g = [[0 for _ in range(m + 1)] for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            g[i][j] = cost[i - 1][j - 1]
+    dp = [[[0 for _ in range(n + 1)] for _ in range(n + 1)] for _ in range(m + n + 1)]
+    for k in range(2, m + n + 1):
+        for x1 in range(max(1, k - m), min(n + 1, k)):
+            for x2 in range(max(1, k - m), min(n + 1, k)):
+                for a in [0, 1]:
+                    for b in [0, 1]:
+                        t = g[x1][k - x1]
+                        if x1 != x2 or k == 2 or k == n + m:
+                            t += g[x2][k - x2]
+                            dp[k][x1][x2] = max(dp[k][x1][x2], dp[k - 1][x1 - a][x2 - b] + t)
+
+    return dp[n + m][n][n]
+
+
 if __name__ == "__main__":
     # k = 1
     # people = [30]
@@ -156,10 +181,15 @@ if __name__ == "__main__":
     print(lcis(nums1, nums2))
     print(lcis2(nums1, nums2))
 
-    cost = [[0, 1, 1, 1, 1],
-            [1, 0, 2, 3, 2],
-            [1, 1, 0, 4, 1],
-            [2, 1, 5, 0, 1],
-            [4, 2, 3, 4, 0]]
-    query = [4, 2, 4, 1, 5, 4, 3, 2, 1]
-    print(mobileServices(cost, query))
+    # cost = [[0, 1, 1, 1, 1],
+    #         [1, 0, 2, 3, 2],
+    #         [1, 1, 0, 4, 1],
+    #         [2, 1, 5, 0, 1],
+    #         [4, 2, 3, 4, 0]]
+    # query = [4, 2, 4, 1, 5, 4, 3, 2, 1]
+    # print(mobileServices(cost, query))
+
+    cost = [[0, 3, 9],
+            [2, 8, 5],
+            [5, 7, 0]]
+    print(differentPaths(cost))
