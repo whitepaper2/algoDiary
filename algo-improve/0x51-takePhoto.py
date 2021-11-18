@@ -161,6 +161,49 @@ def differentPaths(cost):
     return dp[n + m][n][n]
 
 
+def splitCookies(N, M, complaints):
+    """
+    N个人，M个饼干，怨气值，(每个人至少分的一个饼干)，分配饼干使得总怨气值最小
+    :param N:
+    :param M:
+    :param complaints:
+    :return:
+    """
+    g = []
+    for i, e in enumerate(complaints):
+        g.append((e, i + 1))
+    g.sort(key=lambda x: -x[0])
+    g.insert(0, (0, 0))
+    s = [0] * (N + 1)
+    for i in range(1, N + 1):
+        s[i] = s[i - 1] + g[i][0]
+    f = [[0x3f for _ in range(M + 1)] for _ in range(N + 1)]
+    f[0][0] = 0
+    for i in range(1, N + 1):
+        for j in range(1, M + 1):
+            if j >= i:
+                f[i][j] = f[i][j - i]
+            for k in range(1, min(i + 1, j + 1)):
+                f[i][j] = min(f[i][j], f[i - k][j - k] + (s[i] - s[i - k]) * (i - k))
+    print(f[N][M])
+    # @todo:回溯路径有误，不知道问题出在哪？
+    res = [0] * (N + 1)
+    i, j, h = N, M, 0
+    while i and j:
+        if j >= i and f[i][j] == f[i][j - i]:
+            j -= i
+            h += 1
+        else:
+            for k in range(1, min(i + 1, j + 1)):
+                if f[i][j] == f[i - k][j - k] + (s[i] - s[i - k]) * (i - k):
+                    for u in range(i, i - k, -1):
+                        res[g[u][1]] = 1 + h
+                    i -= k
+                    j -= k
+                    break
+    print(res)
+
+
 if __name__ == "__main__":
     # k = 1
     # people = [30]
@@ -189,7 +232,12 @@ if __name__ == "__main__":
     # query = [4, 2, 4, 1, 5, 4, 3, 2, 1]
     # print(mobileServices(cost, query))
 
-    cost = [[0, 3, 9],
-            [2, 8, 5],
-            [5, 7, 0]]
-    print(differentPaths(cost))
+    # cost = [[0, 3, 9],
+    #         [2, 8, 5],
+    #         [5, 7, 0]]
+    # print(differentPaths(cost))
+
+    N = 3
+    M = 20
+    complaints = [1, 2, 3]
+    print(splitCookies(N, M, complaints))  # 2, [2,9,9]
