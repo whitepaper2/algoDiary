@@ -39,24 +39,127 @@ def picturePermutations(k, people):
     return f[s[0]][s[1]][s[2]][s[3]][s[4]]
 
 
+def lcis(A, B):
+    """
+    最长上升公共子序列，即最长上升子序列+最长公共子序列
+    F[i,j] = F[i-1,j], A[i]!=B[j]
+           = max(F[i-1,k])+1, A[i]==B[j]
+    三重循环，复杂度较高
+    :param A:
+    :param B:
+    :return:
+    """
+    lenA, lenB = len(A), len(B)
+    dp = [[0 for _ in range(lenB + 1)] for _ in range(lenA + 1)]
+    for i in range(1, lenA + 1):
+        for j in range(1, lenB + 1):
+            if A[i - 1] != B[j - 1]:
+                dp[i][j] = dp[i - 1][j]
+            else:
+                maxm = -1
+                for k in range(j):
+                    if B[j - 1] > B[k - 1] and dp[i - 1][k] > maxm:
+                        maxm = dp[i - 1][k]
+                dp[i][j] = maxm + 1
+                # for k in range(j):
+                #     if B[j - 1] > B[k - 1]:
+                #         dp[i][j] = max(dp[i][j], dp[i - 1][k] + 1)
+    return dp[-1][-1]
+
+
+def lcis2(A, B):
+    """
+    最长上升公共子序列，即最长上升子序列+最长公共子序列
+    F[i,j] = F[i-1,j], A[i]!=B[j]
+           = max(F[i-1,k])+1, A[i]==B[j]
+    @todo:2层循环
+    :param A:
+    :param B:
+    :return:
+    """
+    lenA, lenB = len(A), len(B)
+    dp = [[0 for _ in range(lenB + 1)] for _ in range(lenA + 1)]
+    for i in range(1, lenA + 1):
+        maxv = 1
+        for j in range(1, lenB + 1):
+            dp[i][j] = dp[i - 1][j]
+            if A[i - 1] == B[j - 1]:
+                dp[i][j] = max(dp[i][j], maxv)
+            if A[i - 1] > B[j - 1]:
+                maxv = max(dp[i - 1][j] + 1, maxv)
+    print(dp)
+    return max(dp[-1])
+
+
+from typing import List
+
+
+def mobileServices(cost: List[List[int]], query: List[int]) -> int:
+    """
+    :param cost: 从i->j的费用
+    :param query: 服务
+    :return:
+    """
+    # initial
+    m, n = len(cost), len(query)
+    w = [[0 for _ in range(m + 1)] for _ in range(m + 1)]
+    for i in range(1, m + 1):
+        for j in range(1, m + 1):
+            w[i][j] = cost[i - 1][j - 1]
+    p = [0 for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        p[i] = query[i - 1]
+    p[0] = 3
+    dp = [[[0x3f for _ in range(m + 1)] for _ in range(m + 1)] for _ in range(n + 1)]
+    dp[0][1][2] = 0
+    # dp
+    for i in range(n):
+        for x in range(1, m + 1):
+            for y in range(1, m + 1):
+                z = p[i]
+                v = dp[i][x][y]
+                if x == y or z == x or z == y:
+                    continue
+                u = p[i + 1]
+                dp[i + 1][x][y] = min(dp[i + 1][x][y], v + w[z][u])
+                dp[i + 1][z][y] = min(dp[i + 1][z][y], v + w[x][u])
+                dp[i + 1][x][z] = min(dp[i + 1][x][z], v + w[y][u])
+    # res
+    res = float('inf')
+    for x in range(1, m + 1):
+        for y in range(1, m + 1):
+            z = p[n]
+            if x == y or x == z or y == z:
+                continue
+            res = min(res, dp[n][x][y])
+
+    return res
+
+
 if __name__ == "__main__":
-    k = 1
-    people = [30]
+    # k = 1
+    # people = [30]
+    #
+    # k = 5
+    # people = [1, 1, 1, 1, 1]
+    # print(picturePermutations(k, people))
+    #
+    # k = 3
+    # people = [3, 2, 1]
+    # print(picturePermutations(k, people))
+    #
+    # k = 4
+    # people = [5, 3, 3, 1]
+    # print(picturePermutations(k, people))
+    nums1 = [2, 2, 1, 3]
+    nums2 = [2, 1, 2, 3]
+    print(lcis(nums1, nums2))
+    print(lcis2(nums1, nums2))
 
-    k = 5
-    people = [1, 1, 1, 1, 1]
-    print(picturePermutations(k, people))
-
-    k = 3
-    people = [3, 2, 1]
-    print(picturePermutations(k, people))
-
-    k = 4
-    people = [5, 3, 3, 1]
-    print(picturePermutations(k, people))
-
-    k = 5
-    people = [6, 5, 4, 3, 2]
-
-    k = 2
-    people = [15, 15]
+    cost = [[0, 1, 1, 1, 1],
+            [1, 0, 2, 3, 2],
+            [1, 1, 0, 4, 1],
+            [2, 1, 5, 0, 1],
+            [4, 2, 3, 4, 0]]
+    query = [4, 2, 4, 1, 5, 4, 3, 2, 1]
+    print(mobileServices(cost, query))
