@@ -59,7 +59,7 @@ def relax(u, v, w, maxDist, parent):
 
 def bellmanFord(G, s):
     """
-    bellman-ford计算单源最短路径问题，返回是否存在路径
+    bellman-ford计算单源最短路径问题，返回是否存在路径.时间复杂度
     :param G:
     :return: [[u1,v1,w1],[u2,v2,w2],[u3,v3,w3]]
     """
@@ -68,6 +68,32 @@ def bellmanFord(G, s):
     for i in range(len(G.vertex) - 1):
         for u, v, w in G.edge:
             relax(u, v, w, maxDist, parent)
+    print(maxDist, parent)
+    for u, v, w in G.edge:
+        if maxDist[v] > maxDist[u] + w:
+            return False
+    return True
+
+
+def spfa(G, s):
+    """
+    Shortest Path Fast Algorithm, 队列优化的bellman-ford计算单源最短路径问题
+    :param G:
+    :param s:
+    :return:
+    """
+    from collections import deque
+    maxDist, parent = initialSingleSource(G, s)
+    queue = deque()
+    queue.append(s)
+    while queue:
+        u = queue.popleft()
+        for v, w in G.adj[u]:
+            if maxDist[v] > maxDist[u] + w:
+                maxDist[v] = maxDist[u] + w
+                parent[v] = u
+                if v not in queue:
+                    queue.append(v)
     print(maxDist, parent)
     for u, v, w in G.edge:
         if maxDist[v] > maxDist[u] + w:
@@ -91,3 +117,4 @@ if __name__ == "__main__":
     graph = DirectionGraph(vertex, edge)
     # print(graph.adj)
     print(bellmanFord(graph, 's'))
+    print(spfa(graph, 's'))
