@@ -95,6 +95,28 @@ def knapsack01Bydfsmemo(w: List[int], v: List[int], maxW: int) -> int:
     return dfs(0, maxW)
 
 
+def knapsack01Complete(w: List[int], v: List[int], maxW: int) -> int:
+    """
+    物品类别(重量w,价值v)，可以使用无数次，挑选出不超过重量maxW的物品的最大价值。
+    1<n<100,1<maxW<10000，可分离物品重量和价值作为2维矩阵。
+    若两者范围更大，则会超时
+    :param w:
+    :param v:
+    :param maxW:
+    :return:
+    """
+    n = len(w)
+    dp = [[0 for _ in range(maxW + 1)] for _ in range(n + 1)]
+    for i in range(n):
+        for j in range(maxW + 1):
+            if j < w[i]:
+                dp[i + 1][j] = dp[i][j]
+            else:
+                dp[i + 1][j] = max(dp[i][j], dp[i+1][j - w[i]] + v[i])
+    print(dp)
+    return dp[n][maxW]
+
+
 if __name__ == "__main__":
     w = [2, 1, 3, 2]
     v = [3, 2, 4, 2]
@@ -102,3 +124,8 @@ if __name__ == "__main__":
     print(knapsack01(w, v, maxW))
     print(knapsack01Bydfs(w, v, maxW))
     print(knapsack01Bydfsmemo(w, v, maxW))
+
+    w = [3, 4, 2]
+    v = [4, 5, 3]
+    maxW = 7
+    print(knapsack01Complete(w, v, maxW))
