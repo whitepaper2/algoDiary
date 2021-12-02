@@ -119,6 +119,25 @@ def rangeFlag(A: List[int], R: int) -> int:
     return res
 
 
+def repairFrench(A: List[int]) -> int:
+    """
+    工匠修理东西，类似于合并石头，每次可任意选择两个
+    优先队列解答
+    :param A:
+    :return:
+    """
+    import heapq
+    res = 0
+    minHeap = A
+    heapq.heapify(minHeap)
+    while minHeap and len(minHeap) > 1:
+        first = heapq.heappop(minHeap)
+        second = heapq.heappop(minHeap)
+        res += first + second
+        heapq.heappush(minHeap, first + second)
+    return res
+
+
 if __name__ == "__main__":
     coins = [3, 2, 1, 3, 0, 2]
     A = 620
@@ -138,3 +157,6 @@ if __name__ == "__main__":
     nums = [1, 7, 15, 20, 30, 50]
     r = 10
     print(rangeFlag(nums, r))
+
+    nums = [8, 5, 8]
+    print(repairFrench(nums))
