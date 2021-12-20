@@ -117,8 +117,77 @@ class DirectionGraph(object):
                     queue.append(idx)
         return path
 
+    def pushRelabel(self, source, sink):
+        """
+        计算最大流有2种方法：
+        1、fordFulkerson是一种方法，有不同实现方式寻找增广路径，本程序使用bfs
+        2、推送-重贴标签（也叫预流推进算法）
+        返回最大流
+        :param source: 源点
+        :param sink: 终点
+        :return:
+        """
+        # 1.init
+        flow = [0] * self.ROW
+        height = [0] * self.ROW
+        edgeFlow = self.graph
+        source = self.vertex2idx[source]
+        sink = self.vertex2idx[sink]
+        height[source] = self.ROW
+        for v, w in enumerate(self.graph[source]):
+            if w:
+                edgeFlow[source][v] -= w
+                edgeFlow[v][source] += w
+                flow[v] += w
+                flow[source] -= w
+
+        def _check():
+            for i in range(self.ROW):
+                if flow[i] > 0 and i != sink:
+                    return True
+            return False
+
+        def _push(x):
+            flag = False
+            for i in range(self.ROW):
+                if edgeFlow[x][i] and height[x] == height[i] + 1:
+                    delta = min(flow[x], edgeFlow[x][i])
+                    edgeFlow[x][i] -= delta
+                    edgeFlow[i][x] += delta
+                    flow[x] -= delta
+                    flow[i] += delta
+                    flag = True
+            return flag
+
+        def _change(x):
+            res = float('inf')
+            for i in range(self.ROW):
+                if edgeFlow[x][i] > 0:
+                    res = min(res, height[i])
+            if res == float('inf'):
+                res -= 1
+            height[x] = res + 1
+            return
+
+        while _check():
+            for i in range(self.ROW):
+                if flow[i] > 0:
+                    if not _push(i):
+                        _change(i)
+                        height[sink] = 0
+        return flow[sink]
+
 
 if __name__ == "__main__":
+    # 1.单向图，矩阵表示
+    vertex = ['s', 'v1', 'v2', 'v3', 'v4', 't']
+    edge = [['s', 'v1', 16], ['s', 'v2', 13], ['v1', 'v3', 12], ['v2', 'v1', 4], ['v2', 'v4', 14], ['v3', 'v2', 9],
+            ['v3', 't', 20], ['v4', 'v3', 7], ['v4', 't', 4]]
+    g = DirectionGraph(vertex, edge)
+    source = 's'
+    sink = 't'
+    maxFlow = g.pushRelabel(source, sink)
+    print("maxFlow={}".format(maxFlow))
     # 1.单向图，矩阵表示
     vertex = ['s', 'v1', 'v2', 'v3', 'v4', 't']
     edge = [['s', 'v1', 16], ['s', 'v2', 13], ['v1', 'v3', 12], ['v2', 'v1', 4], ['v2', 'v4', 14], ['v3', 'v2', 9],
