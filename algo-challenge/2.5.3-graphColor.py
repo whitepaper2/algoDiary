@@ -43,6 +43,8 @@ def graphColor(n: int, relation: List[List[int]]) -> str:
 def secondMinPath(N, edges):
     """
     求顶点1-N的次短路径长度
+    minPath[v] = minPath[u]+dist(u,v)
+    secondMinPath[v] = secondMinPath[u]+dist(u,v) or minPath[u]+dist(u,v)
     :param N: 顶点个数
     :param edges:
     :return:
