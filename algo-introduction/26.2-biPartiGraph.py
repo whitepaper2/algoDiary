@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Time    : 2021/9/13 下午7:45
+# @Time    : 2021/12/23 下午4:48
 # @Author  : pengyuan.li
 # @Site    : 
-# @File    : 26.2_binaryPartitionGraph.py
+# @File    : 26.2-biPartiGraph.py
 # @Software: PyCharm
+
 
 """
 匹配问题：
@@ -17,7 +18,7 @@
         NP-hard，结对子问题
 """
 # 二分图求最大匹配个数，匈牙利算法
-from collections import defaultdict
+from collections import defaultdict, deque
 
 
 class UndirectionGraph(object):
@@ -35,11 +36,13 @@ class UndirectionGraph(object):
             self.rightVertex2Idx[v] = i
             self.rightIdx2Vertex[i] = v
         # 右边匹配左边
-        self.match = [-1] * len(rightVertex)
-        self.used = [False] * len(rightVertex)
         self.leftLen = len(leftVertex)
         self.rightLen = len(rightVertex)
-        self.graph = [[0] * len(rightVertex) for _ in range(len(leftVertex))]
+        self.leftMatch = [-1] * self.leftLen
+        self.rightMatch = [-1] * self.rightLen
+        self.used = [False] * self.rightLen
+
+        self.graph = [[0] * self.rightLen for _ in range(self.leftLen)]
         for u, v in edge:
             self.graph[self.leftVertex2Idx[u]][self.rightVertex2Idx[v]] = 1
 
@@ -69,35 +72,59 @@ class UndirectionGraph(object):
                 dfs(u, 1)
         return True
 
-    def hagarian(self):
-        """
-        贪心算法，二分图的最大匹配当且仅当图中不含增广路
-        :return:
-        """
+    def hopcroftkarp(self):
+        leftDist = [-1] * self.leftLen
+        rightDist = [-1] * self.rightLen
+        dis = float('inf')
 
-        def _dfs(x):
-            """
-            深度优先遍历，寻找交错路径(增广路)
-            :param x: 节点
-            :return: True/False
-            """
-            for j in range(self.rightLen):
-                if self.graph[x][j] and not self.used[j]:
-                    self.used[j] = True
-                    if self.match[j] == -1 or _dfs(self.match[j]):
-                        self.match[j] = x
+        def _bfs():
+            nonlocal leftDist, rightDist, dis
+            dis = float('inf')
+            leftDist = [-1] * self.leftLen
+            rightDist = [-1] * self.rightLen
+            queue = deque()
+            for i in range(self.leftLen):
+                if self.leftMatch[i] == -1:
+                    queue.append(i)
+                    leftDist[i] = 0
+            while queue:
+                u = queue.popleft()
+                if leftDist[u] > dis:
+                    break
+                for v, w in enumerate(self.graph[u]):
+                    if w > 0 and rightDist[v] == -1:
+                        rightDist[v] = leftDist[u] + 1
+                        if self.rightMatch[v] == -1:
+                            dis = rightDist[v]
+                        else:
+                            leftDist[self.rightMatch[v]] = rightDist[v] + 1
+                            queue.append(self.rightMatch[v])
+
+            return dis != float('inf')
+
+        def _dfs(u):
+            nonlocal leftDist, rightDist, dis
+            for v, w in enumerate(self.graph[u]):
+                if w > 0 and not self.used[v] and leftDist[u] + 1 == rightDist[v]:
+                    self.used[v] = True
+                    if self.rightMatch[v] != -1 and rightDist[v] == dis:
+                        continue
+                    if self.rightMatch[v] == -1 or _dfs(self.rightMatch[v]):
+                        self.leftMatch[u] = v
+                        self.rightMatch[v] = u
                         return True
             return False
 
         res = 0
-        for i in range(self.leftLen):
+        while _bfs():
             self.used = [False] * self.rightLen
-            if _dfs(i):
-                res += 1
+            for i in range(self.leftLen):
+                if self.leftMatch[i] == -1 and _dfs(i):
+                    res += 1
         return res
 
     def printMatch(self):
-        for i, v in enumerate(self.match):
+        for i, v in enumerate(self.rightMatch):
             if v != -1:
                 print(self.leftIdx2Vertex[v], self.rightIdx2Vertex[i])
 
@@ -108,7 +135,6 @@ if __name__ == "__main__":
     # edge = [["l1", "r1"], ["l1", "r2"], ["l2", "r2"], ["l2", "r3"], ["l3", "r1"], ["l3", "r2"], ["l4", "r3"]]
     edge = [["l1", "r1"], ["l2", "r1"], ["l2", "r3"], ["l2", "r4"], ["l3", "r2"], ["l3", "r4"], ["l4", "r3"]]
     g = UndirectionGraph(leftVertex, rightVertex, edge)
-    print(g.checkBiPartiGraph())
     print(g.graph)
-    print(g.hagarian())
+    print(g.hopcroftkarp())
     g.printMatch()

@@ -311,7 +311,19 @@ class DirectionGraph(object):
 
 
 if __name__ == "__main__":
-    # 1.单向图，矩阵表示
+    # 1.最大流实现二分图最大匹配个数
+    vertex = ["s", "l1", "l2", "l3", "l4", "r1", "r2", "r3", "r4", "t"]
+    edge = [["l1", "r1", 1], ["l1", "r2", 1], ["l2", "r2", 1], ["l2", "r3", 1], ["l3", "r1", 1], ["l3", "r2", 1],
+            ["l4", "r3", 1],
+            ["s", "l1", 1], ["s", "l2", 1], ["s", "l3", 1], ["s", "l4", 1],
+            ["r1", "t", 1], ["r2", "t", 1], ["r3", "t", 1], ["r4", "t", 1]]
+    g = DirectionGraph(vertex, edge)
+    print(g.graph)
+    source = 's'
+    sink = 't'
+    maxFlow = g.dinic(source, sink)
+    print("maxFlow={}".format(maxFlow))
+    # 2.单向图，矩阵表示，dinic算法
     vertex = ['s', 'v1', 'v2', 'v3', 'v4', 't']
     edge = [['s', 'v1', 16], ['s', 'v2', 13], ['v1', 'v3', 12], ['v2', 'v1', 4], ['v2', 'v4', 14], ['v3', 'v2', 9],
             ['v3', 't', 20], ['v4', 'v3', 7], ['v4', 't', 4]]
@@ -320,7 +332,7 @@ if __name__ == "__main__":
     sink = 't'
     maxFlow = g.dinic(source, sink)
     print("maxFlow={}".format(maxFlow))
-    # 1.单向图，矩阵表示
+    # 3.单向图，矩阵表示，fordFulkerson算法
     vertex = ['s', 'v1', 'v2', 'v3', 'v4', 't']
     edge = [['s', 'v1', 16], ['s', 'v2', 13], ['v1', 'v3', 12], ['v2', 'v1', 4], ['v2', 'v4', 14], ['v3', 'v2', 9],
             ['v3', 't', 20], ['v4', 'v3', 7], ['v4', 't', 4]]
@@ -329,7 +341,7 @@ if __name__ == "__main__":
     sink = 't'
     maxFlow = g.fordFulkerson(source, sink)
     print("maxFlow={}".format(maxFlow))
-    # 1.单向图，矩阵表示
+    # 4.单向图，矩阵表示，预置推送重贴标签
     vertex = ['s', 'v1', 'v2', 'v3', 'v4', 't']
     edge = [['s', 'v1', 16], ['s', 'v2', 13], ['v1', 'v3', 12], ['v2', 'v1', 4], ['v2', 'v4', 14], ['v3', 'v2', 9],
             ['v3', 't', 20], ['v4', 'v3', 7], ['v4', 't', 4]]
