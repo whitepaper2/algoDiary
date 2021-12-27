@@ -15,7 +15,7 @@
         1.3hopcroft-karp算法->dinic 类似
         @todo:上述算法怎么类似的？增广路算法<=>最大流，输入矩阵不同
     2.一般匹配
-        NP-hard，结对子问题
+        NP-hard，结对子问题：2N个学生两两结合，每个学生只想和自己的朋友结对子，求最多能结成多少对？
 """
 # 二分图求最大匹配个数，匈牙利算法
 from collections import defaultdict, deque

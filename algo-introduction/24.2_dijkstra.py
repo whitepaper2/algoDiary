@@ -56,8 +56,7 @@ def relax(u, v, w, maxDist, parent):
         maxDist[v] = maxDist[u] + w
         parent[v] = u
 
-from queue import PriorityQueue
-from pyspark.sql import Window
+
 def dijkstra(G, s):
     """
     dijkstra计算单源最短路径问题，权重非负，返回路径
