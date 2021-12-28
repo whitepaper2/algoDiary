@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2021/1/12 下午8:45
 # @Author  : pengyuan.li
-# @Site    : 
+# @Site    :
 # @File    : 21.1_union_sets.py
 # @Software: PyCharm
 
@@ -10,8 +10,8 @@ from collections import defaultdict
 
 
 class DirectionGraph:
-    def __init__(self, vertex, edge):
 
+    def __init__(self, vertex, edge):
         self.vertex = vertex
         self.adj = defaultdict(list)
         for u, v in edge:
@@ -27,6 +27,7 @@ class DirectionGraph:
 
 
 class UnDirectionGraph(object):
+
     def __init__(self, vertex, edge):
         self.vertex = vertex
         self.adj = defaultdict(list)
@@ -117,6 +118,7 @@ if __name__ == "__main__":
     print(dfs2(graph))
     # 无向图
     vertex = ['r', 's', 't', 'u', 'v', 'w', 'x', 'y']
-    edge = [['r', 's'], ['r', 'v'], ['s', 'w'], ['w', 't'], ['w', 'x'], ['x', 'u'], ['x', 'y'], ['u', 'y']]
+    edge = [['r', 's'], ['r', 'v'], ['s', 'w'], ['w', 't'], ['w', 'x'],
+            ['x', 'u'], ['x', 'y'], ['u', 'y']]
     # graph = UnDirectionGraph(vertex, edge)
     graph = UnDirectionGraph.createGraphByEdge(edge)

@@ -106,8 +106,8 @@ class DirectionGraph(object):
                             update = True
             return nodeCost[t] != float('inf')
 
-        while _spfa(source, sink, parent):
-            # while _bellmanFord(source, sink, parent):
+        # while _spfa(source, sink, parent):
+        while _bellmanFord(source, sink, parent):
             pathFlow = float('inf')
             s = sink
             while s != source:
@@ -116,6 +116,53 @@ class DirectionGraph(object):
             maxFlow += pathFlow
             minCost += pathFlow * nodeCost[sink]
             print(minCost)
+            v = sink
+            while v != source:
+                u = parent[v]
+                self.graph[u][v] -= pathFlow
+                self.graph[v][u] += pathFlow
+                v = parent[v]
+        return maxFlow, minCost
+
+    def maxCostByspfa(self, source, sink):
+        """
+        :param source: 源点
+        :param sink: 终点
+        :return:
+        """
+        maxFlow = 0
+        minCost = 0
+        parent = [-1] * self.ROW
+        source = self.vertex2idx[source]
+        sink = self.vertex2idx[sink]
+        nodeCost = [float('inf')] * self.ROW
+
+        def _bellmanFord(s, t, parent):
+            nonlocal nodeCost
+            nodeCost = [float('inf')] * self.ROW
+            nodeCost[s] = 0
+            update = True
+            while update:
+                update = False
+                for i in range(self.ROW):
+                    if nodeCost[i] == float('inf'):
+                        continue
+                    for v, w in enumerate(self.graph[i]):
+                        if w > 0 and nodeCost[v] > nodeCost[i] + self.cost[i][v]:
+                            nodeCost[v] = nodeCost[i] + self.cost[i][v]
+                            parent[v] = i
+                            update = True
+            return nodeCost[t] != float('inf')
+
+        while _bellmanFord(source, sink, parent):
+            pathFlow = float('inf')
+            s = sink
+            while s != source:
+                pathFlow = min(pathFlow, self.graph[parent[s]][s])
+                s = parent[s]
+            maxFlow += pathFlow
+            minCost += pathFlow * nodeCost[sink]
+            print(pathFlow, minCost)
             v = sink
             while v != source:
                 u = parent[v]
@@ -157,3 +204,20 @@ if __name__ == "__main__":
     sink = 't'
     maxFlow = g.minCostByspfa(source, sink)
     print("maxFlow={}".format(maxFlow))
+
+    # 1.单向图，矩阵表示，spfa算法
+    vertex = ['s', 'l1', 'l2', 'l3', 'l4', 'r1', 'r2', 'r3', 'r4', 't']
+    edge = [['s', 'l1', 1, 0], ['s', 'l2', 1, 0], ['s', 'l3', 1, 0], ['s', 'l4', 1, 0],
+            ['r1', 't', 1, 0], ['r2', 't', 1, 0], ['r3', 't', 1, 0], ['r4', 't', 1, 0],
+            ['l1', 'r1', 1, -3], ['l1', 'r2', 1, -2], ['l1', 'r3', 1, -2], ['l1', 'r4', 1, -4],
+            ['l2', 'r1', 1, -2], ['l2', 'r2', 1, -3], ['l2', 'r3', 1, -3], ['l2', 'r4', 1, -3],
+            ['l3', 'r1', 1, -3], ['l3', 'r2', 1, -2], ['l3', 'r3', 1, -2], ['l3', 'r4', 1, -4],
+            ['l4', 'r1', 1, -3], ['l4', 'r2', 1, -2], ['l4', 'r3', 1, -2], ['l4', 'r4', 1, -4]]
+    g = DirectionGraph(vertex, edge)
+    source = 's'
+    sink = 't'
+    maxFlow = g.maxCostByspfa(source, sink)
+    print("maxFlow={}".format(maxFlow))
+    print(g.printPathByBFS(source))
+
+    weight = [[3, 2, 2, 4], [2, 3, 3, 3], [3, 2, 2, 4], [3, 2, 2, 4]]
