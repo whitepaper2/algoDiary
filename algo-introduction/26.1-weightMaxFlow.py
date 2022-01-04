@@ -2,11 +2,9 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2021/12/23 下午8:06
 # @Author  : pengyuan.li
-# @Site    : 
+# @Site    :
 # @File    : 26.1-weightMaxFlow.py
 # @Software: PyCharm
-
-
 """
 最小费用最大流问题，在取得最大流的基础上，求最小费用
 流量为F时费用的最小值。
@@ -19,6 +17,7 @@ from datetime import datetime
 
 
 class DirectionGraph(object):
+
     def __init__(self, vertex, edge):
         parallelEdge = self._checkParallelEdge(edge)
         if parallelEdge:
@@ -100,7 +99,8 @@ class DirectionGraph(object):
                     if nodeCost[i] == float('inf'):
                         continue
                     for v, w in enumerate(self.graph[i]):
-                        if w > 0 and nodeCost[v] > nodeCost[i] + self.cost[i][v]:
+                        if w > 0 and nodeCost[
+                                v] > nodeCost[i] + self.cost[i][v]:
                             nodeCost[v] = nodeCost[i] + self.cost[i][v]
                             parent[v] = i
                             update = True
@@ -148,7 +148,8 @@ class DirectionGraph(object):
                     if nodeCost[i] == float('inf'):
                         continue
                     for v, w in enumerate(self.graph[i]):
-                        if w > 0 and nodeCost[v] > nodeCost[i] + self.cost[i][v]:
+                        if w > 0 and nodeCost[
+                                v] > nodeCost[i] + self.cost[i][v]:
                             nodeCost[v] = nodeCost[i] + self.cost[i][v]
                             parent[v] = i
                             update = True
@@ -197,8 +198,8 @@ class DirectionGraph(object):
 if __name__ == "__main__":
     # 1.单向图，矩阵表示，spfa算法
     vertex = ['s', 'v1', 'v2', 'v3', 't']
-    edge = [['s', 'v3', 10, 5], ['v3', 'v1', 12, 5], ['v1', 't', 10, 15], ['s', 't', 10, 10],
-            ['v3', 't', 5, 10]]
+    edge = [['s', 'v3', 10, 5], ['v3', 'v1', 12, 5], ['v1', 't', 10, 15],
+            ['s', 't', 10, 10], ['v3', 't', 5, 10]]
     g = DirectionGraph(vertex, edge)
     source = 's'
     sink = 't'
@@ -207,17 +208,17 @@ if __name__ == "__main__":
 
     # 1.单向图，矩阵表示，spfa算法
     vertex = ['s', 'l1', 'l2', 'l3', 'l4', 'r1', 'r2', 'r3', 'r4', 't']
-    edge = [['s', 'l1', 1, 0], ['s', 'l2', 1, 0], ['s', 'l3', 1, 0], ['s', 'l4', 1, 0],
-            ['r1', 't', 1, 0], ['r2', 't', 1, 0], ['r3', 't', 1, 0], ['r4', 't', 1, 0],
-            ['l1', 'r1', 1, -3], ['l1', 'r2', 1, -2], ['l1', 'r3', 1, -2], ['l1', 'r4', 1, -4],
-            ['l2', 'r1', 1, -2], ['l2', 'r2', 1, -3], ['l2', 'r3', 1, -3], ['l2', 'r4', 1, -3],
-            ['l3', 'r1', 1, -3], ['l3', 'r2', 1, -2], ['l3', 'r3', 1, -2], ['l3', 'r4', 1, -4],
-            ['l4', 'r1', 1, -3], ['l4', 'r2', 1, -2], ['l4', 'r3', 1, -2], ['l4', 'r4', 1, -4]]
+    edge = [['s', 'l1', 1, 0], ['s', 'l2', 1, 0], ['s', 'l3', 1, 0],
+            ['s', 'l4', 1, 0], ['r1', 't', 1, 0], ['r2', 't', 1, 0],
+            ['r3', 't', 1, 0], ['r4', 't', 1, 0], ['l1', 'r1', 1, -3],
+            ['l1', 'r2', 1, -2], ['l1', 'r3', 1, -2], ['l1', 'r4', 1, -4],
+            ['l2', 'r1', 1, -2], ['l2', 'r2', 1, -3], ['l2', 'r3', 1, -3],
+            ['l2', 'r4', 1, -3], ['l3', 'r1', 1, -3], ['l3', 'r2', 1, -2],
+            ['l3', 'r3', 1, -2], ['l3', 'r4', 1, -4], ['l4', 'r1', 1, -3],
+            ['l4', 'r2', 1, -2], ['l4', 'r3', 1, -2], ['l4', 'r4', 1, -4]]
     g = DirectionGraph(vertex, edge)
     source = 's'
     sink = 't'
     maxFlow = g.maxCostByspfa(source, sink)
     print("maxFlow={}".format(maxFlow))
     print(g.printPathByBFS(source))
-
-    weight = [[3, 2, 2, 4], [2, 3, 3, 3], [3, 2, 2, 4], [3, 2, 2, 4]]
