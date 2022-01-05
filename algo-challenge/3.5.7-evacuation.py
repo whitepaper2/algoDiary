@@ -48,11 +48,11 @@ class Solution(object):
                 self.graph[u].append(v)
                 self.graph[v].append(u)
 
-            def _dfs(self, v):
+            def dfs(self, v):
                 self.used[v] = 1
                 for u in self.graph[v]:
                     w = self.match[u]
-                    if w < 0 or self.used[w] == 0 and self._dfs(w):
+                    if w < 0 or self.used[w] == 0 and self.dfs(w):
                         self.match[v] = u
                         self.match[u] = v
                         return True
@@ -63,7 +63,7 @@ class Solution(object):
                 for i in range(self.maxN):
                     if self.match[i] < 0:
                         self.used = [0] * self.maxN
-                        if self._dfs(i):
+                        if self.dfs(i):
                             res += 1
                 return res
 
@@ -91,17 +91,39 @@ class Solution(object):
                 elif maze[i][j] == '.':
                     peoples.append((i, j))
 
-        # 二分法求最小时间
+        # 1、二分法求最小时间
         n = rows * cols
-        left, right = -1, n + 1
-        while right - left > 1:
-            mid = (right + left) // 2
-            if _isValid(mid):
-                right = mid
-            else:
-                left = mid
+        # left, right = -1, n + 1
+        # while right - left > 1:
+        #     mid = (right + left) // 2
+        #     if _isValid(mid):
+        #         right = mid
+        #     else:
+        #         left = mid
 
-        return "impossible" if right > n else right
+        # return "impossible" if right > n else right
+        # 2、增广路径，不用重复计算
+        num = 0
+        d, p = len(doors), len(peoples)
+        v = n * d + p
+        G = BiGraph(v)
+        for i in range(d):
+            for j in range(p):
+                if dist[doors[i][0]][doors[i][1]][peoples[j][0]][peoples[j]
+                                                                 [1]] >= 0:
+                    for k in range(
+                            dist[doors[i][0]][doors[i][1]][peoples[j][0]][
+                                peoples[j][1]], n + 1):
+                        G.addEdge((k - 1) * d + i, n * d + j)
+        if p == 0:
+            return 0
+        for v in range(n * d):
+            G.used = [0] * G.maxN
+            if G.dfs(v):
+                num += 1
+                if num == p:
+                    return v // d + 1
+        return "impossible"
 
 
 if __name__ == "__main__":
@@ -112,10 +134,10 @@ if __name__ == "__main__":
     print(ss.escapeTime(maze))
 
     maze = [['X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'],
-     ['X', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'D'],
-     ['X', '.', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'],
-     ['X', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'X'],
-     ['X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X']]
+            ['X', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'D'],
+            ['X', '.', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'],
+            ['X', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'X'],
+            ['X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X']]
     ss = Solution()
     print(ss.escapeTime(maze))
 
