@@ -33,9 +33,9 @@ class Trie(object):
         cur = self.root
         for s in word:
             cur = cur.children.get(s)
-            if cur is None or not cur.isEnd:
+            if cur is None:
                 return False
-        return True
+        return cur.isEnd==True
 
 
 def getMaxWord(words):
@@ -124,13 +124,20 @@ def getPrefixCnts2(words, prefix):
 
 
 if __name__ == "__main__":
-    # words = ["w", "wo", "wor", "worl", "world"]
-    # print(getMaxWord(words))
+    words = ["w", "wo", "wor", "worl", "world"]
+    print(getMaxWord(words))
 
     words = ["w", "wo", "wor", "worl", "world", "worw", "wo"]
     prefix = "world"
     print(getPrefixCnts(words, prefix))
 
-    words = ["w", "wo", "wor", "worl", "world", "worw", "wo"]
-    prefix = "world"
-    print(getPrefixCnts2(words, prefix))
+    # words = ["w", "wo", "wor", "worl", "world", "worw", "wo"]
+    # prefix = "world"
+    # print(getPrefixCnts2(words, prefix))
+
+    words = ['ant','act','ackt']
+    trie = Trie()
+    for word in words:
+        trie.insert(word)
+    print(trie.search('act'))
+
