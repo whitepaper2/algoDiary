@@ -7,8 +7,6 @@
 @Software: VSCode
 '''
 
-# here put the import lib
-
 from typing import List
 
 
@@ -19,11 +17,6 @@ class Solution:
         m, n = len(grid), len(grid[0])
 
         def build2dPresum(arr: List[List[int]]) -> List[List[int]]:
-            '''
-            description: 
-            param {*}
-            return {*}
-            '''
             """
             计算2维前缀和
             """
