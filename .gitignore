@@ -2,7 +2,7 @@
 .idea/
 .vscode/
 __pycache__/
-avaliable-books/
+available-books/
 *.py[cod]
 *$py.class
 
