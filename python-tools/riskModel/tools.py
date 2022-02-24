@@ -189,3 +189,88 @@ importances = model.feature_importances_
 lst = zip(train_x.columns, importances)
 lst = sorted(lst, key=lambda x: x[1], reverse=True)
 print(lst)
+
+# 计算ks
+from scipy.stats import ks_2samp
+ks_2samp(modelPdf.loc[modelPdf.label==1,'prob'],modelPdf.loc[modelPdf.label==0,'prob'])
+
+
+def plot_lift(y_predproab, y_true):
+    '''
+    params:
+        y_predproab:预测值概率/正样本分组
+        y_true:真实值/正负样本标记label
+    result:
+        绘制lift曲线
+    '''
+    result = pd.DataFrame([y_true,y_predproab]).T
+    result.columns = ['target','proba']
+    result = result.sort_values(['proba','target'],ascending=False).reset_index()
+    del result['index']
+    result.set_index((result.index+1)/result.shape[0],inplace=True)
+    result['bad_sum'] = result['target'].cumsum()
+    result['count_sum'] = [i+1 for i in range(result.shape[0])]
+    result['rate'] = result['bad_sum']/result['count_sum']
+    result['lift'] = result['rate']/(result['target'].sum()/result.shape[0])
+    
+    fig = plt.figure(figsize=(12,6))
+    ax1 = fig.add_subplot(1,2,1)
+    ax1.grid(True,linestyle='-.')
+    ax1.plot(result['rate'],color='red',label='Lift model')
+    ax1.plot(result.index,[result['target'].sum()/result.shape[0]]*result.shape[0],color='blue',label='Lift random')
+    ax1.set_title('Lift Chart',fontsize=25)
+    ax1.set_ylabel('tp/(tp+fp)',fontsize=20)
+    ax1.set_xlabel('data sets',fontsize=20)
+    ax1.set_xticks([i/10 for i in range(11)])
+    plt.legend(loc='best')
+    
+    ax2 = fig.add_subplot(1,2,2)
+    ax2.plot(result['lift'],color='darkorange')
+    ax2.grid(True,linestyle='-.')
+    ax2.set_title('Cumulative Lift Chart',fontsize=25)
+    ax2.set_ylabel('lift',fontsize=20)
+    ax2.set_xlabel('data sets',fontsize=20)
+    ax2.set_xticks([i/10 for i in range(11)])
+    plt.show()
+    
+def plot_auc_ks(y,pred):
+    from sklearn.metrics import roc_curve
+    fpr,tpr,thresholds = roc_curve(y,pred)
+    auc=roc_auc_score(y,pred) #计算auc
+    print("AUC:",auc)
+    
+    #计算ks
+    KS_max=0
+    best_thr=0
+    for i in range(len(fpr)):
+        if(i==0):
+            KS_max=tpr[i]-fpr[i]
+            best_thr=thresholds[i]
+        elif (tpr[i]-fpr[i]>KS_max):
+            KS_max = tpr[i] - fpr[i]
+            best_thr = thresholds[i]
+
+    print('最大KS为：',KS_max)
+    print('最佳阈值为：',best_thr)
+    table = pd.crosstab(y,pred>=best_thr,rownames=['label'],colnames=['preds'])
+    print(table)
+    #画曲线图
+    plt.figure(figsize=(10,10))
+    plt.plot(fpr,tpr)
+    plt.title('$ROC curve$')
+    plt.show()
+# 得到特殊点的lift值
+def getLift(y_true,y_predproab, thresholds):
+    result = pd.DataFrame([y_true,y_predproab]).T
+    result.columns = ['target','proba']
+    result = result.sort_values(['proba','target'],ascending=False).reset_index()
+    del result['index']
+    result.set_index((result.index+1)/result.shape[0],inplace=True)
+    result['bad_sum'] = result['target'].cumsum()
+    result['count_sum'] = [i+1 for i in range(result.shape[0])]
+    result['rate'] = result['bad_sum']/result['count_sum']
+    result['lift'] = result['rate']/(result['target'].sum()/result.shape[0])
+    for t in thresholds:
+        tres = result[result.index<=t]
+        print(t,tres.iloc[-1]['lift'])
+getLift(modelPdf['label'],modelPdf['prob'],[0.001,0.005,0.01])
