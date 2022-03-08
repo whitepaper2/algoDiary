@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2021/1/12 下午8:45
 # @Author  : pengyuan.li
-# @Site    : 
+# @Site    :
 # @File    : 21.1_union_sets.py
 # @Software: PyCharm
 
@@ -10,6 +10,7 @@ from collections import defaultdict
 
 
 class UnionFindSets:
+
     def __init__(self, A):
         """
         维护父节点(字典)、高度(字典)、并查集个数
