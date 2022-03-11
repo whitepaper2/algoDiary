@@ -9,6 +9,7 @@
 
 # here put the import lib
 import torch
+import bisect
 
 in_channels = 3  #输入通道数量
 out_channels = 64  #输出通道数量
@@ -30,3 +31,4 @@ print(conv_layer.weight.shape)
 # torch.Size([1, 3, 100, 100])
 # torch.Size([1, 64, 98, 98])
 # torch.Size([64, 3, 3, 3])
+torch.save()
