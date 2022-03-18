@@ -9,5 +9,6 @@ import scrapy
 class XwlbItem(scrapy.Item):
     # define the fields for your item here like:
     title = scrapy.Field()
+    date = scrapy.Field()
     summary = scrapy.Field()
     details = scrapy.Field()
