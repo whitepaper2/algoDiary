@@ -14,7 +14,6 @@ class XwlbPipeline:
         return item
 
 
-        # if item['details']:
 class TextPipeline(object):
 
     def __init__(self) -> None:
