@@ -65,6 +65,8 @@ FEED_EXPORT_ENCODING = 'utf-8'
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'xwlb.pipelines.TextPipeline': 300,
+    'xwlb.pipelines.DuplicatePipeline': 301,
+    'xwlb.pipelines.MySQLPipeline': 400,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -87,3 +89,12 @@ ITEM_PIPELINES = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+# mysql 配置
+MYSQL_DB_NAME = 'spider'
+MYSQL_HOST = '127.0.0.1'
+MYSQL_USER = 'spiderman'
+MYSQL_PASSWORD = 'spiderman1234'
+
+# redis 配置
+RDEIS_HOST = '127.0.0.1'
+RDEIS_USER = 'spiderman'
