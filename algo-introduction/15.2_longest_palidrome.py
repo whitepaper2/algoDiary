@@ -7,10 +7,10 @@
 # @Software: PyCharm
 
 
-def lcs(X):
+def palidromeLcs(X):
     """
-    最长回文子序列，c[i,j]=c[i+1,j-1]+2, X[i]==Y[j]
-    c[i,j]=max(c[i+1,j],c[i,j-1])，X[i]!=Y[j]
+    最长回文子序列，c[i,j]=c[i+1,j-1]+2, X[i]==X[j]
+    c[i,j]=max(c[i+1,j],c[i,j-1])，X[i]!=X[j]
     :param X:
     :return:
     """
@@ -24,6 +24,29 @@ def lcs(X):
             else:
                 c[i][j] = max(c[i][j - 1], c[i + 1][j])
     return c[0][m - 1]
+
+
+def LCS(X, Y):
+    """
+    最长公共子序列，dp[i][j] = dp[i-1][j-1]+1 , X[i]==Y[j]
+    dp[i][j] = max(dp[i][j-1],dp[i-1][j])
+    Arguments
+    ---------
+    X:str
+    Y:str
+    Returns
+    -------
+    int
+    """
+    m, n = len(X), len(Y)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+    for i in range(m):
+        for j in range(n):
+            if X[i] == Y[j]:
+                dp[i + 1][j + 1] = dp[i][j] + 1
+            else:
+                dp[i + 1][j + 1] = max(dp[i + 1][j], dp[i][j + 1])
+    return dp[m][n]
 
 
 def printLCS(p, X, m, n):
@@ -68,4 +91,6 @@ def dpLCS(A):
 
 if __name__ == "__main__":
     s = "character"
-    print(lcs(s))  # carac
+    print(palidromeLcs(s))  # carac
+    S, T = "abcdefgh", "acef"
+    print(LCS(S, T))

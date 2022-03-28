@@ -2,26 +2,29 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2021/9/22 下午8:59
 # @Author  : pengyuan.li
-# @Site    : 
+# @Site    :
 # @File    : 20210922_trieTree.py
 # @Software: PyCharm
-
 """
 前缀树，字符串由小写字母表示
 """
 
-from collections import defaultdict
+from collections import defaultdict,Counter
+from typing import List
 
 
 class TrieNode(object):
+
     def __init__(self):
         self.isEnd = False
         self.children = defaultdict(TrieNode)
 
 
 class Trie(object):
-    def __init__(self):
+
+    def __init__(self, N=32):
         self.root = TrieNode()
+        self.N = N
 
     def insert(self, word):
         cur = self.root
@@ -35,7 +38,20 @@ class Trie(object):
             cur = cur.children.get(s)
             if cur is None:
                 return False
-        return cur.isEnd==True
+        return cur.isEnd == True
+
+    def getXor(self, word):
+        res = 0
+        cur = self.root
+        for i, s in enumerate(word):
+            s2 = str(int(s) ^ 1)
+            if cur.children:
+                if s2 in cur.children:
+                    res += 1 << (self.N - i - 1)
+                    cur = cur.children.get(s2)
+                else:
+                    cur = cur.children.get(s)
+        return res
 
 
 def getMaxWord(words):
@@ -72,7 +88,7 @@ def getPrefixCnts(words, prefix):
             preWords.append(prefix[0])
         else:
             preWords.append(preWords[-1] + s)
-    from collections import Counter
+    
     wordDict = Counter(words)
     res = 0
     for s in preWords:
@@ -82,19 +98,20 @@ def getPrefixCnts(words, prefix):
 
 def getPrefixCnts2(words, prefix):
     """
-    构造前缀字典树
+    构造前缀字典树，叶子节点的数量相加
     :param words:
     :param prefix:
     :return:
     """
 
     class TrieCntNode(object):
+
         def __init__(self):
             self.children = defaultdict(TrieCntNode)
-            self.isEnd = False
             self.cnts = 0
 
     class TrieCntTree(object):
+
         def __init__(self):
             self.root = TrieCntNode()
 
@@ -102,8 +119,8 @@ def getPrefixCnts2(words, prefix):
             cur = self.root
             for w in word:
                 cur = cur.children[w]
+            # 叶子节点+1
             cur.cnts += 1
-            cur.isEnd = True
 
         def getCnts(self, word):
             res = 0
@@ -123,6 +140,31 @@ def getPrefixCnts2(words, prefix):
     return tree.getCnts(prefix)
 
 
+def maxXorPairs(A: List[int]) -> int:
+    """
+    note:在一系列整数中，寻找最大的异或对，max(A[i] xor A[j]), 0<=i<n,i<j
+    整数表示为32位二进制数，构造字典树，贪心寻找，每次与当前值相反的数
+    Arguments
+    ---------
+    A:List[int]
+    Returns
+    -------
+    int
+    """
+    N = 32
+    B = []
+    res = 0
+    for a in A:
+        a2 = bin(a)[2:]
+        B.append("".join([str(0)] * (N - len(a2))) + a2)
+    trie = Trie(N)
+    for b in B:
+        res = max(res, trie.getXor(b))
+        trie.insert(b)
+
+    return res
+
+
 if __name__ == "__main__":
     words = ["w", "wo", "wor", "worl", "world"]
     print(getMaxWord(words))
@@ -131,13 +173,18 @@ if __name__ == "__main__":
     prefix = "world"
     print(getPrefixCnts(words, prefix))
 
-    # words = ["w", "wo", "wor", "worl", "world", "worw", "wo"]
-    # prefix = "world"
-    # print(getPrefixCnts2(words, prefix))
+    words = ["wo", "wor", "worl", "world", "worw", "wo"]
+    prefix = "world"
+    print(getPrefixCnts2(words, prefix))
 
-    words = ['ant','act','ackt']
+    words = ['ant', 'act', 'ackt']
     trie = Trie()
     for word in words:
         trie.insert(word)
     print(trie.search('act'))
 
+    print(maxXorPairs([2, 4, 5, 6, 7]))
+    # nums = [2,4,5,6,7]
+    # for i in range(len(nums)):
+    #     for j in range(i+1,len(nums)):
+    #         print(i^j)
