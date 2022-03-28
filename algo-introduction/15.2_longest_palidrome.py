@@ -2,35 +2,28 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2020/11/26 下午8:53
 # @Author  : pengyuan.li
-# @Site    : 
+# @Site    :
 # @File    : 16.1_greedy_activity.py
 # @Software: PyCharm
 
 
 def lcs(X):
     """
-    最长回文子串，c[i,j]=c[i+1,j-1]+1, X[i]==Y[j]
-    c[i,j]=max(c[i+1,j],c[i,j-1]，X[i]!=Y[j]
+    最长回文子序列，c[i,j]=c[i+1,j-1]+2, X[i]==Y[j]
+    c[i,j]=max(c[i+1,j],c[i,j-1])，X[i]!=Y[j]
     :param X:
     :return:
     """
     m = len(X)
-    c = [[0] * (m + 1) for _ in range(m + 1)]
-    for i in range(m, 0, -1):
-        for j in range(i, m + 1):
-            if i == j:
-                c[i][j] = 1
-            elif j - i == 1:
-                c[i][j] = 2 if X[i - 1] == X[j - 1] else 1
-            elif j - i == 2:
-                c[i][j] = 3 if X[i - 1] == X[j - 1] else max(c[i][j - 1], c[i + 1][j])
+    c = [[0] * m for _ in range(m)]
+    for i in range(m - 1, -1, -1):
+        c[i][i] = 1
+        for j in range(i + 1, m):
+            if X[i] == X[j]:
+                c[i][j] = c[i + 1][j - 1] + 2
             else:
-                if X[i + 1] == X[j - 1]:
-                    c[i][j] = c[i + 1][j - 1] + 1
-                else:
-                    c[i][j] = max(c[i][j - 1], c[i + 1][j])
-    print(c)
-    return c[1][m]
+                c[i][j] = max(c[i][j - 1], c[i + 1][j])
+    return c[0][m - 1]
 
 
 def printLCS(p, X, m, n):
@@ -75,4 +68,4 @@ def dpLCS(A):
 
 if __name__ == "__main__":
     s = "character"
-    print(lcs(s))
+    print(lcs(s))  # carac

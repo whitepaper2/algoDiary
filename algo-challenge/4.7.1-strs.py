@@ -172,6 +172,100 @@ def getMaxPalidrom2(S):
     return res, S[l:r + 1]
 
 
+def getstrMaxCommon(S, T):
+    """
+    两个字符串的最长公共子串，dp[i][j] = dp[i-1][j-1]+1, if S[i]==T[j]
+    若求多个字符串的公共子串呢？
+    Arguments
+    ---------
+    S:str
+    T:str
+    Returns
+    -------
+    str
+    """
+    m, n = len(S), len(T)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+    res = 0
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if S[i - 1] == T[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+                res = max(res, dp[i][j])
+    return res
+
+
+def getstrMaxCommon2(sList):
+    """
+    两个字符串的最长公共子串，dp[i][j] = dp[i-1][j-1]+1, if S[i]==T[j]
+    若求多个字符串的公共子串呢？
+    二分+hash：子串长度m，求每个字符串中长度为m子串hash值是否相等
+    Arguments
+    ---------
+    S:str
+    T:str
+    Returns
+    -------
+    str
+    """
+    n = len(sList)
+    m = max([len(s) for s in sList])
+
+    def check(k):
+        for i, s in enumerate(sList):
+            cur = []
+            for i in range(0, len(s), k):
+                cur.append([i, i + k])
+            tmp = set(querystrRangeHash(s, cur))
+            if i == 0:
+                res = tmp
+            else:
+                res = res & tmp
+        return len(res) != 0
+
+    l, r = 0, m
+    while l < r:
+        mid = (l + r) // 2
+        if check(mid):
+            l = mid
+        else:
+            r = mid - 1
+    return l
+
+
+def allUniqueStr(S):
+    """
+    note:字符串中所有不同子串的个数。
+    遍历不同长度的子串hash值，总计不同hash值
+    Arguments
+    ---------
+    S:str
+    Returns
+    -------
+    int
+    """
+    n = len(S)
+    Mod = 100000007
+    b = 233
+    preHash = [0] * (n + 1)
+    B = [1] * n
+    for i in range(1, n):
+        B[i] = (B[i - 1] * b) % Mod
+    # a + b*x + c*x^2
+    for i in range(n):
+        preHash[i + 1] = (preHash[i] + B[i] * ord(S[i])) % Mod
+
+    res = 0
+    for l in range(1, n + 1):
+        cur = set()
+        for i in range(n - l):
+            h = (preHash[i + l] - preHash[i] + Mod) % Mod
+            h = (h * B[n - i - 1]) % Mod  # 同量纲
+            cur.add(h)
+        res += len(cur)
+    return res
+
+
 if __name__ == "__main__":
     T = "abcabcd"
     S = "ab"
@@ -181,6 +275,9 @@ if __name__ == "__main__":
     print(getstrHash(T) == getstrHash2(T[-1::-1]))
     print(getstrRangeHash(T, 1, 3))
 
-    S = "babad"
+    S = "babcad"
     print(getMaxPalidrom2(S))
     print(getMaxPalidrom(S))
+
+    print(getstrMaxCommon(S, T))
+    print(allUniqueStr(S))
