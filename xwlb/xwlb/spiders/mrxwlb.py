@@ -39,7 +39,7 @@ class MrxwlbSpider(scrapy.Spider):
             nums = numpattern.findall(entitle)
             if len(nums) == 3:
                 item['date'] = datetime.datetime.strftime(datetime.date(int(nums[0]), int(nums[1]),
-                                             int(nums[2])),"%Y-%m-%d")
+                                             int(nums[2])),'%Y-%m-%d')
             else:
                 item['date'] = entitle
             summary = t.xpath(
@@ -56,9 +56,7 @@ class MrxwlbSpider(scrapy.Spider):
             # item['details'] = str(details).strip()
             # yield item
 
-        # next = response.xpath(
-        #     "//div[@class='pagebar']/span[@class='next-page']/a/@href"
-        # ).extract_first()
+        next = response.xpath("//div[@class='pagebar']/span[@class='next-page']/a/@href").extract_first()
 
-        # url = response.urljoin(next)
-        # yield scrapy.Request(url=url, callback=self.parse)
+        url = response.urljoin(next)
+        yield scrapy.Request(url=url, callback=self.parse)
