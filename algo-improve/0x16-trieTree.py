@@ -9,7 +9,7 @@
 前缀树，字符串由小写字母表示
 """
 
-from collections import defaultdict,Counter
+from collections import defaultdict, Counter
 from typing import List
 
 
@@ -88,7 +88,7 @@ def getPrefixCnts(words, prefix):
             preWords.append(prefix[0])
         else:
             preWords.append(preWords[-1] + s)
-    
+
     wordDict = Counter(words)
     res = 0
     for s in preWords:
@@ -151,6 +151,9 @@ def maxXorPairs(A: List[int]) -> int:
     -------
     int
     """
+    # 暴力解法
+    # nums = [2,4,5,6,7]
+    # max(i^j for i in range(len(nums)) for j in range(i+1,len(nums)))
     N = 32
     B = []
     res = 0
@@ -161,9 +164,38 @@ def maxXorPairs(A: List[int]) -> int:
     for b in B:
         res = max(res, trie.getXor(b))
         trie.insert(b)
-
     return res
 
+
+def xorLongestPath():
+    """
+    note:树上边，x和y权值最大异或值
+    D[x]：root到x路径上所有边权的异或值，= D[father(x)] xor weight(father(x),x)
+    """
+    outEdges = [[1, 2, 3], [1, 3, 4], [1, 4, 3], [2, 5, 10], [2, 6, 8],
+                [4, 7, 2], [4, 8, 5], [7, 9, 1]]
+    adj = defaultdict(list)
+    vertices = set()
+    for u, v, w in outEdges:
+        adj[u].append((v, w))
+        vertices.add(u)
+        vertices.add(v)
+    # root = 1
+    n = len(vertices)
+    dist = [0] * (n + 1)
+
+    def dfs(root):
+        if root in adj:
+            for v, w in adj[root]:
+                dist[v] = w ^ dist[root]
+                dfs(v)
+
+    dfs(1)
+    # print(dist)
+    return maxXorPairs(dist)
+
+
+# @todo:两个字典树合并问题
 
 if __name__ == "__main__":
     words = ["w", "wo", "wor", "worl", "world"]
@@ -184,7 +216,5 @@ if __name__ == "__main__":
     print(trie.search('act'))
 
     print(maxXorPairs([2, 4, 5, 6, 7]))
-    # nums = [2,4,5,6,7]
-    # for i in range(len(nums)):
-    #     for j in range(i+1,len(nums)):
-    #         print(i^j)
+
+    print(xorLongestPath())
