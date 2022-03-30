@@ -10,6 +10,9 @@
 
 # here put the import lib
 # O(n)解决两字符串匹配问题
+from matplotlib.pyplot import get
+
+
 def strMatch(S, T):
     """
     模式T在字符串S中的匹配位置
@@ -36,6 +39,27 @@ def strMatch(S, T):
         if pos == len(T):
             res.append(tar - pos)
             pos = next[pos - 1]
+    return res
+
+
+def strMatch2(S, T):
+    """
+    模式T在字符串S中的匹配位置
+    Arguments
+    ---------
+    S:str
+    T:str
+    Returns
+    -------
+    List[int]
+    """
+    res = []
+    m, n = len(S), len(T)
+    st = T + '#' + S
+    next = getNext2(st)
+    for i in range(n, m + n + 1):
+        if next[i] == n:
+            res.append(i - 2 * n)
     return res
 
 
@@ -85,6 +109,7 @@ if __name__ == "__main__":
     s = "abcabcd"
     t = "ab"
     print(strMatch(s, t))
+    print(strMatch2(s, t))
 
     print(getNext(s))
     print(getNext2(s))
