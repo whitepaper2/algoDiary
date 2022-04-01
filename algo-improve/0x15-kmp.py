@@ -7,10 +7,8 @@
 @Software: VSCode
 '''
 
-
 # here put the import lib
 # O(n)解决两字符串匹配问题
-from matplotlib.pyplot import get
 
 
 def strMatch(S, T):
@@ -105,6 +103,50 @@ def getNext2(S):
     return next
 
 
+# 统计每个前缀在字符串中出现的次数，分2种情况
+# 1.S的每个前缀与S匹配，求匹配个数
+# 2.S的每个前缀与T匹配，求匹配个数
+def prefixCnts(S):
+    """每个前缀与S匹配，求匹配个数，包括空集
+    """
+    n = len(S)
+    next = getNext2(S)
+    res = [0] * (n + 1)
+    for i in range(n):
+        res[next[i]] += 1
+    for i in range(n - 1, 0, -1):
+        res[next[i - 1]] += res[i]
+    for i in range(n + 1):
+        res[i] += 1
+    return res
+
+
+# 本质不同的子串个数，即删除重复子串
+def substrNum(S):
+    n = len(S)
+    res = 0
+    for i in range(n):
+        cur = S[0:i]
+        t = S[i::-1]
+        next = getNext2(t)
+        res += len(cur) + 1 - max(next)
+    return res
+
+
+def strCompress(S):
+    n = len(S)
+    next = getNext2(S)
+    k = n - next[-1]
+    return k if k < n and n % k == 0 else -1
+
+
+def automation(S):
+    """
+    ac自动机是一种算法，多模匹配算法，KMP和trie的结合
+    """
+    pass
+
+
 if __name__ == "__main__":
     s = "abcabcd"
     t = "ab"
@@ -113,3 +155,8 @@ if __name__ == "__main__":
 
     print(getNext(s))
     print(getNext2(s))
+
+    print(prefixCnts(s))
+
+    print(substrNum(s))
+    print(strCompress(s))
