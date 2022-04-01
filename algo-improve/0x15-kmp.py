@@ -147,8 +147,30 @@ def automation(S):
     pass
 
 
+def miniStrDesc(S):
+    """
+    字符串的最小表示，即字典序最小的循环同构字符串。
+    """
+    n = len(S)
+    i, j = 0, 1
+    k = 0
+    while i < n and j < n and k < n:
+        if S[(i + k) % n] == S[(j + k) % n]:
+            k += 1
+        else:
+            if S[(i + k) % n] > S[(j + k) % n]:
+                i += 1 + k
+            else:
+                j += 1 + k
+            k = 0
+            if i == j:
+                i += 1
+    p = min(i, j)
+    return i, S[p:] + S[0:p]
+
+
 if __name__ == "__main__":
-    s = "abcabcd"
+    s = "adbcabcd"
     t = "ab"
     print(strMatch(s, t))
     print(strMatch2(s, t))
@@ -160,3 +182,4 @@ if __name__ == "__main__":
 
     print(substrNum(s))
     print(strCompress(s))
+    print(miniStrDesc(s))
