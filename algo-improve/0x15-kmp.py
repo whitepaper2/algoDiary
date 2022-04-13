@@ -107,7 +107,8 @@ def getNext2(S):
 # 1.S的每个前缀与S匹配，求匹配个数
 # 2.S的每个前缀与T匹配，求匹配个数
 def prefixCnts(S):
-    """每个前缀与S匹配，求匹配个数，包括空集
+    """
+    每个前缀与S匹配，求匹配个数，包括空集
     """
     n = len(S)
     next = getNext2(S)
@@ -169,6 +170,79 @@ def miniStrDesc(S):
     return i, S[p:] + S[0:p]
 
 
+def constructSA(S):
+    """
+    构造字符串的后缀数组
+    """
+
+    pass
+
+
+def zAlgo(S):
+    """
+    z-algorithm，扩展KMP，z[i]=LCP(s,s[i,n-1])，字符串与后缀子串的公共前缀，特别地z[0]=0
+    三种算法：朴素算法，二分+hash，KMP
+    """
+    n = len(S)
+    z = [0] * n
+    for i in range(1, n):
+        while i + z[i] < n and S[i + z[i]] == S[0 + z[i]]:
+            z[i] += 1
+    return z
+
+
+def zAlgo2(S):
+    """
+    z-algorithm，扩展KMP，z[i]=LCP(s,s[i,n-1])，字符串与后缀子串的公共前缀，特别地z[0]=0
+    三种算法：朴素算法，二分+hash，KMP
+    """
+    n = len(S)
+    z = [0] * n
+    l, r = 0, 0
+    for i in range(1, n):
+        if i <= r and z[i - l] < r - i + 1:
+            z[i] = z[i - l]
+        else:
+            z[i] = max(0, r - i + 1)
+            while i + z[i] < n and S[i + z[i]] == S[0 + z[i]]:
+                z[i] += 1
+        if i + z[i] - 1 > r:
+            l = i
+            r = i + z[i] - 1
+    return z
+
+
+def zAlgo3(S):
+    """
+    z-algorithm，扩展KMP，z[i]=LCP(s,s[i,n-1])，字符串与后缀子串的公共前缀，特别地z[0]=0
+    三种算法：朴素算法，二分+hash，KMP
+    """
+    Mod = 1000000007
+    b = 171
+    n = len(S)
+    f = [0] * (n + 1)
+    for i in range(1, n + 1):
+        f[i] = (f[i - 1] * b + ord(S[i - 1])) % Mod
+    p = [0] * (n + 1)
+    p[0] = 1
+    for i in range(1, n + 1):
+        p[i] = p[i - 1] * b % Mod
+    res = 0
+    for i in range(n, 0, -1):
+        head = 0
+        tail = n - i + 1
+        while head < tail:
+            mid = (head + tail + 1) >> 1
+            h = (f[i + mid - 1] - f[i - 1] * p[mid] % Mod + Mod) % Mod
+            if h == f[mid]:
+                head = mid
+            else:
+                tail = mid - 1
+        res += head
+
+    return res
+
+
 if __name__ == "__main__":
     s = "adbcabcd"
     t = "ab"
@@ -183,3 +257,10 @@ if __name__ == "__main__":
     print(substrNum(s))
     print(strCompress(s))
     print(miniStrDesc(s))
+    s = "aaabaab"
+    print(zAlgo(s))
+    print(zAlgo2(s))
+    print(zAlgo3(s))
+    import pickle
+    pickle.load()
+    import lightgbm
