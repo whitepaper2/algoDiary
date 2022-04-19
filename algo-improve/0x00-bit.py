@@ -70,6 +70,41 @@ def minHamiltonPath(n, graph):
     return dp[(1 << n) - 1][n - 1]
 
 
+# 起床困难综合征，通过一系列的位运算使得结果最大，求初始值x
+def boss(m, doors):
+    """
+    m:数据的取值范围，[0,m]
+    doors:['or',d]
+    """
+    n = len(doors)
+    N = 15
+
+    def calc(bit, now):
+        for q, v in doors:
+            x = v >> bit & 1
+            if q == "AND":
+                now &= x
+            elif q == "OR":
+                now |= x
+            elif q == "XOR":
+                now ^= x
+            else:
+                print("error")
+        return now
+
+    cur = 0
+    res = 0
+    for i in range(N, -1, -1):
+        res0 = calc(i, 0)
+        res1 = calc(i, 1)
+        if cur + (1 << i) <= m and res0 < res1:
+            cur += (1 << i)
+            res += (res1 << i)
+        else:
+            res += (res0 << i)
+    return res
+
+
 if __name__ == "__main__":
     a = 3
     b = 10
@@ -99,3 +134,7 @@ if __name__ == "__main__":
         graph,
         path,
     ))
+
+    m = 10
+    doors = [['AND', 5], ['OR', 6], ['XOR', 7]]
+    print(boss(m, doors))
