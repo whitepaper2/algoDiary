@@ -44,7 +44,7 @@ def suffixArr2(S):
         # rk[i] = S[i] # 修改字符串比较大小
     w = 1
     while w < n:
-        # cmp_to_key:比较大小用减法，不等式不正确。
+        # cmp_to_key:比较大小用减法，不等式不正确。新版功能
         sa.sort(key=cmp_to_key(lambda x, y: rk[x + w] - rk[y + w]
                                if rk[x] == rk[y] else rk[x] - rk[y]))
         oldrk = deepcopy(rk)
