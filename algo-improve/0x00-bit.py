@@ -23,6 +23,31 @@ def mypow(a, b, p):
     return res
 
 
+def isHamiltonPath(n, graph, path):
+    """
+    n:顶点个数
+    graph:邻接矩阵
+    path:一条路径
+    return:是否是哈密尔顿回路，True or False 
+    note: path = n+1个顶点 and 每个点都走到 and 首尾相连 
+    """
+    # 下标从1开始
+    visited = [0] * (n + 1)
+    if len(path) != n + 1:
+        return False
+    pathLen = len(path)
+    if path[0] != path[pathLen - 1]:
+        return False
+    for i in range(pathLen - 1):
+        if not graph[path[i]][path[i + 1]]:
+            return False
+        visited[path[i]] = 1
+    for i in range(1, n + 1):
+        if not visited[i]:
+            return False
+    return True
+
+
 def minHamiltonPath(n, graph):
     """
     n:顶点个数
@@ -41,7 +66,7 @@ def minHamiltonPath(n, graph):
                     if (i ^ (1 << j)) >> k & 1:
                         dp[i][j] = min(dp[i][j],
                                        dp[i ^ (1 << j)][k] + graph[k][j])
-    print(dp)
+
     return dp[(1 << n) - 1][n - 1]
 
 
@@ -54,8 +79,23 @@ if __name__ == "__main__":
     n = 6
     edges = [[6, 2, 1], [3, 4, 2], [1, 5, 3], [2, 5, 2], [3, 1, 1], [4, 1, 3],
              [1, 6, 2], [6, 3, 3], [1, 2, 4], [4, 5, 2]]
-    graph = [[float('inf')]*n for _ in range(n)]
-    for u,v,w in edges:
-        graph[u-1][v-1] = w
-        graph[v-1][u-1] = w
-    print(minHamiltonPath(n,graph))
+    graph = [[float('inf')] * n for _ in range(n)]
+    for u, v, w in edges:
+        graph[u - 1][v - 1] = w
+        graph[v - 1][u - 1] = w
+    print(minHamiltonPath(n, graph))
+
+    n = 6
+    edges = [[6, 2, 1], [3, 4, 2], [1, 5, 3], [2, 5, 2], [3, 1, 1], [4, 1, 3],
+             [1, 6, 2], [6, 3, 3], [1, 2, 4], [4, 5, 2]]
+    graph = [[0] * (n + 1) for _ in range(n + 1)]
+    for u, v, w in edges:
+        graph[u][v] = 1
+        graph[v][u] = 1
+    # path = [5, 1, 4, 3, 6, 2, 5]
+    path = [6, 1, 2, 5, 4, 3, 1]
+    print(isHamiltonPath(
+        n,
+        graph,
+        path,
+    ))
