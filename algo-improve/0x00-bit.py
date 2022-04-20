@@ -105,6 +105,15 @@ def boss(m, doors):
     return res
 
 
+def bitPair(n):
+    """
+    成对变换，n>=0
+    n是偶数，n^1=n+1
+    n是奇数，n^1=n-1
+    """
+    return n ^ 1
+
+
 if __name__ == "__main__":
     a = 3
     b = 10
@@ -138,3 +147,6 @@ if __name__ == "__main__":
     m = 10
     doors = [['AND', 5], ['OR', 6], ['XOR', 7]]
     print(boss(m, doors))
+
+    print(bitPair(3))
+    print(bitPair(6))
