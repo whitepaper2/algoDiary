@@ -65,6 +65,9 @@ def partSubset(n, m):
     chosen = [0] * n
 
     def calc(i):
+        # 剪枝，删除剩余部分全选中也不足m
+        if n - i + 1 + sum(chosen) < m:
+            return
         # 剪枝，删除长度大于m的子集
         if i > n or sum(chosen) > m:
             return
@@ -85,8 +88,35 @@ def partSubset(n, m):
     return res
 
 
+def permute(n):
+    """
+    note:1-n所有数据的排列集合
+    """
+    nums = list(range(1, n + 1))
+    chosen = [0] * n
+    res = []
+    order = [0] * n
+
+    def calc(k):
+        if k == n:
+            res.append([nums[i] for i in order])
+            return
+        for i in range(n):
+            if chosen[i]:
+                continue
+            order[k] = i
+            chosen[i] = 1
+            calc(k + 1)
+            chosen[i] = 0
+
+    calc(0)
+    # print(len(res))
+    return res
+
+
 if __name__ == "__main__":
     n = 5
     print(allSubset(n))
     print(allSubset2(n))
     print(partSubset(n, 3))
+    print(permute(n))
