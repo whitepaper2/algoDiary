@@ -60,6 +60,63 @@ def incdecNum(A: List[int]) -> int:
     return minOP, res
 
 
+def tallestCow(N, P, H, relations):
+    """
+    一排牛站成一队，当两头牛比他们中间位置牛高时，两头牛相互可以看见，求每头牛最大可能高度。
+    N:牛的总数
+    P:最高的牛所在位置
+    H:最高的牛的高度
+    relations:相互可以看见的两头牛位置
+    """
+    dupRelations = []
+    for a, b in relations:
+        if a > b:
+            a, b = b, a
+        if [a, b] not in dupRelations:
+            dupRelations.append([a, b])
+    C = [0] * (N + 1)
+    # 复杂度 O(mn)
+    for a, b in dupRelations:
+        for i in range(a + 1, b):
+            C[i] -= 1
+    h = 0
+    if C[P] > 0:
+        h = -C[P]
+    if C[P] < 0:
+        h = C[P]
+
+    for i in range(1, N + 1):
+        C[i] += H + h
+    return C[1:]
+
+
+def tallestCow2(N, P, H, relations):
+    """
+    一排牛站成一队，当两头牛比他们中间位置牛高时，两头牛相互可以看见，求每头牛最大可能高度。
+    N:牛的总数
+    P:最高的牛所在位置
+    H:最高的牛的高度
+    relations:相互可以看见的两头牛位置
+    """
+    dupRelations = []
+    for a, b in relations:
+        if a > b:
+            a, b = b, a
+        if [a, b] not in dupRelations:
+            dupRelations.append([a, b])
+    C = [0] * (N + 1)
+    d = [0] * (N + 1)
+    # 复杂度 O(mn)
+    for a, b in dupRelations:
+        d[a + 1] -= 1
+        d[b] += 1
+    res = []
+    for i in range(1, N + 1):
+        C[i] = C[i - 1] + d[i]
+        res.append(C[i]+H)
+    return res
+
+
 if __name__ == "__main__":
     mat = [[0, 0, 1], [1, 1, 1]]
     r = 1
@@ -67,3 +124,10 @@ if __name__ == "__main__":
 
     nums = [1, 1, 2, 2]
     print(incdecNum(nums))
+
+    N = 9
+    P = 3
+    H = 5
+    relations = [[1, 3], [5, 3], [4, 3], [3, 7], [9, 8]]
+    print(tallestCow(N, P, H, relations))
+    print(tallestCow2(N, P, H, relations))
