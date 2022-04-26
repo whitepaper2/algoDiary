@@ -1,0 +1,47 @@
+FROM registry.tongdun.me/library/centos7-python:3.3
+
+ENV APPNAME=${APPNAME} \
+    PYTHONIOENCODING="UTF-8"
+
+# 工作目录/home/admin/应用目录，不要改
+WORKDIR /home/admin/$APPNAME
+
+
+# 首先放入依赖记录文件requirements.txt
+ADD requirements.txt .
+# 安装python依赖，打包机有外网权限，此处使用豆瓣源提速
+RUN pip3 install -r requirements.txt
+#RUN pip3 install -r requirements.txt -i http://mirrors.aliyun.com/pypi/simple  --trusted-host mirrors.aliyun.com
+
+# 放入整个工程
+ADD . .
+
+# 运行启动脚本
+CMD ["/bin/bash", "-c" ,"sh /home/admin/$APPNAME/start.sh"]
+
+
+"""
+docker命令解释
+FROM:获得基本镜像，可多个，首行
+ENV:设置环境变量
+WORKDIR:工作目录
+ADD、RUN:安装requirements.txt内容，Python中有依赖包会报错，（没有在requirements.txt里的包版本默认最新版）
+修改方法:在requirements.txt添加指定版本的依赖包
+CMD:执行命令
+
+terminal执行如下:
+1.  进入到项目目录  包含Dockerfile的目录
+2、 打包 docker build -t  tag: 版本 .    比如: docker build -t vaptcha:3.0 .
+3、 启动容器
+docker run -it -d -e APP_RUN_MODE=fg -e APPNAME=vaptcha -e APP_HOME=/home/admin/vaptcha -e PNUM=3 -p 7081:8088 --cpus=4 vaptcha:2.0
+docker run -it -e APP_RUN_MODE=fg -e APPNAME=fprisklabel -e APP_HOME=/home/admin/fprisklabel -e PNUM=3 -p 7080:8088 --cpus=4 --memory=8g fprisklabel:6.0
+参数 -d 后台运行，去掉可以在标准输出端查看报错信息
+参数 7080:8088 宿主端口:docker端口，访问链接 主机IP:主机端口 url = "http://10.58.10.253:7080/fprisklabel/verify"
+
+lightgbm predict接口，输入可改为numpy.array(),如下，比pd.DataFrame()快多了!!!
+indata = np.array([onehotdata.get(y) for y in varList]).reshape(1, -1)
+
+try:
+except Exception as e:
+print(e) 使用try...except 输出报错信息最有用，其他白搭
+"""
