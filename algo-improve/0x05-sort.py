@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2021/11/9 下午4:41
 # @Author  : pengyuan.li
-# @Site    : 
+# @Site    :
 # @File    : 0x05-sort.py
 # @Software: PyCharm
 
@@ -43,7 +43,7 @@ def delReplicate2(A):
         j += 1
         A[j] = A[i]
     print(A)
-    return A[:j+1]
+    return A[:j + 1]
 
 
 def discrete(a: List[int], b: List[int], c: List[int]):
@@ -61,7 +61,7 @@ def discrete(a: List[int], b: List[int], c: List[int]):
     peoples = []
     k = 1
     for i, j in zip(b, c):
-        peoples.append([peopleDict[i], peopleDict[j], k])
+        peoples.append([peopleDict.get(i, 0), peopleDict.get(j, 0), k])
         k += 1
     peoples.sort(key=lambda x: (-x[0], -x[1]))
     return peoples[0][2]
