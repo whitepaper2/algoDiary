@@ -44,4 +44,8 @@ indata = np.array([onehotdata.get(y) for y in varList]).reshape(1, -1)
 try:
 except Exception as e:
 print(e) 使用try...except 输出报错信息最有用，其他白搭
+
+docker images 查询镜像是否打包成功
+docker ps 查询镜像启动是否成功
+docker kill [pid] 杀死镜像
 """

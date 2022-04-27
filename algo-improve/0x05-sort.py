@@ -67,6 +67,49 @@ def discrete(a: List[int], b: List[int], c: List[int]):
     return peoples[0][2]
 
 
+def minmCard(A):
+    """
+    均分纸牌，当前位置只能向邻近位置移动若干张
+    A:纸牌张数
+    return: 最少的移动次数
+    """
+    if sum(A) % len(A) != 0:
+        print("no answer!")
+    avgA = sum(A) / len(A)
+    res = 0
+    cnts = 0  # 移动牌的个数
+    for i in range(len(A)):
+        if A[i] != avgA:
+            # 给右边邻居 A[i]-avgA 数值
+            t = A[i] - avgA
+            A[i + 1] += t
+            res += 1
+            cnts += abs(t)
+    print(cnts)
+    return res
+
+
+def minmCard2(A):
+    """
+    均分纸牌，当前位置只能向邻近位置移动若干张
+    A:纸牌张数
+    return: 最少的移动牌的个数
+    """
+    n = len(A)
+    if sum(A) % len(A) != 0:
+        print("no answer!")
+    res = 0
+    avgA = sum(A) / len(A)
+    prefixSum = [0] * (n + 1)
+    B = []
+    for i in range(n):
+        t = A[i] - avgA
+        B.append(t)
+        prefixSum[i + 1] = prefixSum[i] + B[i]
+    print(sum([abs(x) for x in prefixSum]))
+    return res
+
+
 if __name__ == "__main__":
     a = [2, 3, 2]
     b = [3, 2]
@@ -74,3 +117,8 @@ if __name__ == "__main__":
     print(discrete(a, b, c))
 
     print(delReplicate2(a))
+
+    cards = [9, 8, 17, 6]
+    print(minmCard(cards))
+    cards = [9, 8, 17, 6]
+    print(minmCard2(cards))
