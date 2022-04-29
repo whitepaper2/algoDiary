@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2021/11/26 下午4:12
 # @Author  : pengyuan.li
-# @Site    : 
+# @Site    :
 # @File    : 0x13-findNeighbor.py
 # @Software: PyCharm
 
@@ -11,12 +11,14 @@ from sortedcontainers import SortedList
 
 def findNeighbor(nums):
     """
+    nums互不相同
     返回[2,n]，使得min(abs(A[i]-A[j])), j<i,
     :param nums:
-    :return:
+    :return:j, minj
     """
+    res = []
     n = len(nums)
-    nums.insert(0, 0)
+    nums.insert(0, float('-inf'))
     v2id = {}
 
     for i, e in enumerate(nums):
@@ -30,15 +32,20 @@ def findNeighbor(nums):
         cur = float('inf')
         j = i
 
-        if idx + 1 < len(sortsets):
-            cur = min(cur, abs(nums[i] - sortsets[idx + 1]))
-            j = v2id[sortsets[idx + 1]]
         if idx - 1 >= 0:
-            cur = min(cur, abs(nums[i] - sortsets[idx - 1]))
-            j = v2id[sortsets[idx - 1]]
-        print(cur, j)
+            t = abs(nums[i] - sortsets[idx - 1])
+            if cur > t:
+                cur = t
+                j = v2id[sortsets[idx - 1]]
+        if idx + 1 < len(sortsets):
+            t = abs(nums[i] - sortsets[idx + 1])
+            if cur > t:
+                cur = t
+                j = v2id[sortsets[idx + 1]]
+        res.append([j, cur])
+    return res
 
 
 if __name__ == "__main__":
     nums = [1, 5, 3]
-    findNeighbor(nums)
+    print(findNeighbor(nums))
