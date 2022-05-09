@@ -112,9 +112,9 @@ def strPeriods(S):
     next = getNext2(S)
     res = []
     for i in range(1, n):
-        j = i+1
-        if j % (j - next[i]) == 0 and j // (j- next[i]) > 1:
-            res.append([j, j // (j- next[i])])
+        j = i + 1
+        if j % (j - next[i]) == 0 and j // (j - next[i]) > 1:
+            res.append([j, j // (j - next[i])])
     return res
 
 
@@ -166,6 +166,7 @@ def automation(S):
 def miniStrDesc(S):
     """
     字符串的最小表示，即字典序最小的循环同构字符串。
+    求余解法。
     """
     n = len(S)
     i, j = 0, 1
@@ -181,6 +182,32 @@ def miniStrDesc(S):
             k = 0
             if i == j:
                 i += 1
+    p = min(i, j)
+    return i, S[p:] + S[0:p]
+
+
+def miniStrDesc2(S):
+    """
+    字符串的最小表示，即字典序最小的循环同构字符串。
+    重复字符串SS
+    """
+    n = len(S)
+    SS = S + S
+    i, j = 0, 1
+    while i < n and j < n:
+        k = 0
+        while k < n and SS[i + k] == SS[j + k]:
+            k += 1
+        if k == n:
+            break
+        if SS[i + k] > SS[j + k]:
+            i += k + 1
+            if i == j:
+                i += 1
+        else:
+            j += k + 1
+            if i == j:
+                j += 1
     p = min(i, j)
     return i, S[p:] + S[0:p]
 
@@ -259,7 +286,7 @@ def zAlgo3(S):
 
 
 if __name__ == "__main__":
-    for s in ["aaa","abcd","aabaabaabaab"]:
+    for s in ["aaa", "abcd", "aabaabaabaab"]:
         print(strPeriods(s))
     s = "adbcabcd"
     t = "ab"
@@ -274,6 +301,7 @@ if __name__ == "__main__":
     print(substrNum(s))
     print(strCompress(s))
     print(miniStrDesc(s))
+    print(miniStrDesc2(s))
     s = "aaabaab"
     print(zAlgo(s))
     print(zAlgo2(s))
