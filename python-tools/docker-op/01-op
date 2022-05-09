@@ -48,4 +48,6 @@ print(e) 使用try...except 输出报错信息最有用，其他白搭
 docker images 查询镜像是否打包成功
 docker ps 查询镜像启动是否成功
 docker kill [pid] 杀死镜像
+docker stats 查询镜像运行时资源使用情况
+docker logs tail=100 pid 查询镜像运行日志最近100行记录
 """

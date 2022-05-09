@@ -39,12 +39,14 @@ def findSameSnow(n, snow: List[List[int]]) -> bool:
         psize = 6
         for i in range(psize):
             for j in range(psize):
+                # 顺时针
                 isEqual = 1
                 for k in range(psize):
                     if p[(i + k) % psize] != q[(j + k) % psize]:
                         isEqual = 0
                 if isEqual:
                     return True
+                # 逆时针
                 isEqual = 1
                 for k in range(psize):
                     if p[(i + k) % psize] != q[(j - k + psize) % psize]:
