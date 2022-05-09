@@ -14,6 +14,7 @@
 def strMatch(S, T):
     """
     模式T在字符串S中的匹配位置
+    KMP解法，1.模式串S的next数组，2.T中匹配next
     Arguments
     ---------
     S:str
@@ -83,7 +84,7 @@ def getNext(S):
 
 def getNext2(S):
     """
-    next[i] = max(S[i-j+1:i]==S[1:j])，朴素算法 O(n^2)
+    KMP解法，模式串S的next数组,已知next[0~i-1],求next[i]
     Arguments
     ---------
     S:str
@@ -101,6 +102,20 @@ def getNext2(S):
             j += 1
         next[i] = j
     return next
+
+
+def strPeriods(S):
+    """
+    return (len,前缀串(len>1)中的最小循环单元个数)
+    """
+    n = len(S)
+    next = getNext2(S)
+    res = []
+    for i in range(1, n):
+        j = i+1
+        if j % (j - next[i]) == 0 and j // (j- next[i]) > 1:
+            res.append([j, j // (j- next[i])])
+    return res
 
 
 # 统计每个前缀在字符串中出现的次数，分2种情况
@@ -244,6 +259,8 @@ def zAlgo3(S):
 
 
 if __name__ == "__main__":
+    for s in ["aaa","abcd","aabaabaabaab"]:
+        print(strPeriods(s))
     s = "adbcabcd"
     t = "ab"
     print(strMatch(s, t))
