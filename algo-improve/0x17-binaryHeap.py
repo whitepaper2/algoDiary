@@ -70,3 +70,4 @@ if __name__ == "__main__":
     B = [2, 2, 3]
     N = 3
     print(topNsum(A, B, N))
+    nums = [1,3,4,6,12]
