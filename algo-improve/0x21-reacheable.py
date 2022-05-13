@@ -37,6 +37,7 @@ def reacheable(edges: List[List[int]]) -> List[int]:
             indegree[u] -= 1
             if indegree[u] == 0:
                 pq.append(u)
+    # N可作为参数传入，表示顶点个数
     N = 11
     f = [bitarray('0' * N) for _ in range(N)]
     for i in range(len(seq) - 1, -1, -1):
