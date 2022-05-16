@@ -9,6 +9,7 @@
 
 # here put the import lib
 from typing import List
+from bitarray import bitarray
 
 
 def catclimb(weight: List[int], maxWeight: int) -> int:
@@ -47,6 +48,42 @@ def catclimb(weight: List[int], maxWeight: int) -> int:
     return res
 
 
+def str2Mat(strs):
+    out = []
+    for i in range(0, len(strs), 9):
+        out.append(strs[i:i + 9])
+    return out
+
+
+def sudoku(strs):
+    out = []
+    for i in range(0, len(strs), 9):
+        out.append(strs[i:i + 9])
+    N = 9
+    M = 1 << N
+    rows = [bitarray('0' * N) for _ in range(N)]
+    cols = [bitarray('0' * N) for _ in range(N)]
+    cells = [[bitarray('0' * N)] * 3 for _ in range(3)]
+    onecnts = [0] * M
+    mydict = [0] * M
+
+    def lowbit(x):
+        return x & (-x)
+
+    for i in range(M):
+        mydict[1 << i] = i
+
+    for i in range(M):
+        j = i
+        while j > 0:
+            onecnts[i] += 1
+            j -= lowbit(j)
+    
+    
+    print(cells)
+    return out
+
+
 if __name__ == "__main__":
     weight = [1, 2, 1994, 12, 29]
     maxWeight = 1996
@@ -55,3 +92,7 @@ if __name__ == "__main__":
     weight = [1000, 1003, 1994, 1200, 1290]
     maxWeight = 1996
     print(catclimb(weight, maxWeight))
+
+    strs = "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......"
+    print(sudoku(strs))
+    "417369825632158947958724316825437169791586432346912758289643571573291684164875293"
