@@ -35,6 +35,7 @@ def minStickLength(sticks: List[int]) -> int:
             return dfs(idx + 1, 0, 0, cnt, curlen)
         fail = 0
         for i in range(last, n):
+            # 不再搜索上次相同的失败匹配
             if not isVisited[
                     i] and cab + sticks[i] <= curlen and fail != sticks[i]:
                 isVisited[i] = 1
@@ -42,7 +43,7 @@ def minStickLength(sticks: List[int]) -> int:
                     return True
                 fail = sticks[i]
                 isVisited[i] = 0
-                if cab == 0 and cab + sticks[i] == curlen:
+                if cab == 0 or cab + sticks[i] == curlen:
                     return False
         return False
 
@@ -55,6 +56,15 @@ def minStickLength(sticks: List[int]) -> int:
             res = curlen
             break
     return res
+
+
+def birthdayGift(N, M):
+    """
+    @N: 待制作 N*pi
+    @M: 蛋糕层数
+    @return: 蛋糕表面积
+    """
+    pass
 
 
 if __name__ == "__main__":
