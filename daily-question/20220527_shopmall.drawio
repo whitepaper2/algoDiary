@@ -1,0 +1,28 @@
+<mxfile host="65bd71144e">
+    <diagram id="kXMC-bxNPlXKZmboi1mM" name="Page-1">
+        <mxGraphModel dx="610" dy="424" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="商品表&lt;br&gt;id&lt;br&gt;goods_name&lt;br&gt;goods_desc&lt;br&gt;picture&lt;br&gt;price&lt;br&gt;categoryid&lt;br&gt;状态" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="150" y="140" width="120" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="商品种类表&lt;br&gt;id&lt;br&gt;parentid&lt;br&gt;category_name&lt;br&gt;goods_desc&lt;br&gt;typetags" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="310" y="140" width="120" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="订单表&lt;br&gt;id&lt;br&gt;user_id&lt;br&gt;{goods_id:&lt;br&gt;nums}&lt;br&gt;totalprice&lt;br&gt;状态()&lt;br&gt;address&lt;br&gt;telephone" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="320" y="360" width="120" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="库存表&lt;br&gt;id&lt;br&gt;goods_id&lt;br&gt;nums&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="160" y="360" width="120" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="饮料&lt;br&gt;羽毛球&lt;br&gt;球线&lt;br&gt;球拍&lt;br&gt;球鞋、球衣（尺寸）" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="230" y="290" width="120" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="订单明细表&lt;br&gt;id&lt;br&gt;user_id&lt;br&gt;{goods_id:&lt;br&gt;nums}&lt;br&gt;totalprice&lt;br&gt;状态()&lt;br&gt;address&lt;br&gt;telephone" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="470" y="310" width="120" height="170" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
