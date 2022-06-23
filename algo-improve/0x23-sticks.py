@@ -76,7 +76,6 @@ def birthdayGift(N, M):
     R[M + 1] = float('inf')
     R[M + 1] = float('inf')
     res = float('inf')
-    
 
     def dfs(u, v, s):
         nonlocal res
@@ -87,7 +86,7 @@ def birthdayGift(N, M):
         if s + 2 * (N - v) / R[u + 1] >= res:
             return
         if not u:
-            if v==N:
+            if v == N:
                 res = s
             return
         for r in range(
